@@ -1,0 +1,18 @@
+{
+  "ADMIN_PASSWORD": {
+    "alg": "aes-256-ctr",
+    "value": "ff1a1f04322afe350e87a8c001ae3834"
+  },
+  "ADMIN_UUID": {
+    "alg": "aes-256-ctr",
+    "value": "ff4f0c443f3fa47550ead9c55eff7b22add5d901b4a8f7c19c948d10675038e109ba44b8039c"
+  },
+  "ADMIN_LOGGED_IN": {
+    "alg": "aes-256-ctr",
+    "value": "bb1a060338"
+  },
+  "ADMIN_USERNAME": {
+    "alg": "aes-256-ctr",
+    "value": "ff1a0e1d3433f83411b588d003b574"
+  }
+}

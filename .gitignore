@@ -102,3 +102,6 @@ dist
 
 # TernJS port file
 .tern-port
+
+# storage used to save dev db and uploaded files
+storage/

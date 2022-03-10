@@ -1,0 +1,29 @@
+{
+  "name": "autowork",
+  "version": "1.0.0",
+  "description": "Workflow automation system",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "npm --prefix ./autowork-server run start",
+    "client": "",
+    "prod": "",
+    "dev-server": "npm --prefix ./autowork-server run dev",
+    "dev-client": "npm --prefix ./autowork-client run start",
+    "dev": "concurrently \"npm run dev-server\" \"npm run dev-client\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/revul93/autowork.git"
+  },
+  "author": "Omar Jajah (revul93)",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/revul93/autowork/issues"
+  },
+  "homepage": "https://github.com/revul93/autowork#readme",
+  "dependencies": {
+    "@reduxjs/toolkit": "^1.8.0",
+    "concurrently": "^7.0.0"
+  }
+}
