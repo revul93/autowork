@@ -1,7 +1,6 @@
-const { RolesGroups, Group, Role } = require('../../models');
-const { Op } = require('sequelize');
-
 const EveryRole = async () => {
+  const { RolesGroups, Group, Role } = require('../../models');
+
   const group = await Group.create({
     name: 'Every role group',
     description: 'Every role in the corporate belongs to this group',
@@ -18,6 +17,9 @@ const EveryRole = async () => {
 };
 
 const EveryNonSupervisorOrManager = async () => {
+  const { RolesGroups, Group, Role } = require('../../models');
+  const { Op } = require('sequelize');
+
   const group = await Group.create({
     name: 'Every Non Supervisor Or Manager',
     description:
@@ -26,18 +28,20 @@ const EveryNonSupervisorOrManager = async () => {
 
   const roles = await Role.findAll({
     where: {
-      [Op.or]: [
-        {
-          title: {
-            [Op.endsWith]: 'Supervisor',
+      [Op.not]: {
+        [Op.or]: [
+          {
+            title: {
+              [Op.endsWith]: 'Supervisor',
+            },
           },
-        },
-        {
-          title: {
-            [Op.endsWith]: 'Manager',
+          {
+            title: {
+              [Op.endsWith]: 'Manager',
+            },
           },
-        },
-      ],
+        ],
+      },
     },
   });
 
@@ -51,6 +55,9 @@ const EveryNonSupervisorOrManager = async () => {
 };
 
 const EverySupervisor = async () => {
+  const { RolesGroups, Group, Role } = require('../../models');
+  const { Op } = require('sequelize');
+
   const group = await Group.create({
     name: 'Every supervisor group',
     description: 'Every supervisor role in the corporate belongs to this group',
@@ -74,6 +81,9 @@ const EverySupervisor = async () => {
 };
 
 const EveryManager = async () => {
+  const { RolesGroups, Group, Role } = require('../../models');
+  const { Op } = require('sequelize');
+
   const group = await Group.create({
     name: 'Every manager group',
     description: 'Every manager role in the corporate belongs to this group',

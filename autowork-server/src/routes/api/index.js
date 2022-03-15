@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 router.use(require('./auth'));
+router.use(require('./workflow_users'));
 // router.use(require('./department'));
 // router.use(require('./section'));
 // router.use(require('./role'));

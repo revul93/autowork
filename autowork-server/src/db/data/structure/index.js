@@ -1,10 +1,10 @@
-const { Role } = require('../../models');
-const initializeGroups = require('./Groups');
-const initializeHRDepartment = require('./dep.HR.js');
-const initializeITDepartment = require('./dep.IT.js');
-const initializeFinancialAccountingDepartment = require('./dep.finance');
-
 const initializeStructure = async () => {
+  const { Role } = require('../../models');
+  const initializeGroups = require('./Groups');
+  const initializeHRDepartment = require('./dep.HR.js');
+  const initializeITDepartment = require('./dep.IT.js');
+  const initializeFinancialAccountingDepartment = require('./dep.finance');
+
   try {
     await Role.create({ title: 'General Manager' });
     await Role.create({ title: 'DIRECT SUPERVISOR' });

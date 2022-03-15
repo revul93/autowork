@@ -95,7 +95,7 @@ router.post(
       await user.save();
       return res.json({
         message: 'Success',
-        payload: { token: getToken(user) },
+        payload: { token: await getToken(user) },
       });
     } catch (error) {
       handleErrors(error, res);
@@ -191,7 +191,9 @@ router.post(
       await nconf.save();
       return res.json({
         message: 'Success',
-        payload: { token: getToken({ id: await nconf.get('ADMIN_UUID') }) },
+        payload: {
+          token: await getToken({ id: await nconf.get('ADMIN_UUID') }),
+        },
       });
     } catch (error) {
       handleErrors(error, res);

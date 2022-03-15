@@ -1,6 +1,5 @@
-const { Department, Section, Role, Employee, User } = require('../../models');
-
 const initializeHRDepartment = async () => {
+  const { Department, Section, Role, Employee, User } = require('../../models');
   const GM = await Role.findOne({
     where: { title: 'General Manager' },
   });
