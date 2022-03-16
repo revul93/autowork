@@ -8,8 +8,9 @@ const get_db = async () => {
 
   // in development: reset database then seed initial data
   if (process.env.NODE_ENV === 'development') {
-    await db.sync({ force: true, alter: true });
-    await seed_db();
+    // await db.sync({ force: true, alter: true });
+    // await seed_db();
+    await db.sync();
   } else if (process.env.NODE_ENV === 'production') {
     await db.sync({ alter: true, force: true });
     // await seed_db();

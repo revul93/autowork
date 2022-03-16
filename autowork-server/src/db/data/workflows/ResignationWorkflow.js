@@ -6,11 +6,12 @@ const ResignationWorkflow = async () => {
   const name = 'Resignation';
   const description = 'Resignation Workflow for Managers';
   const initiators = await Group.findOne({ name: 'Every manager group' });
+
   await Workflow.create({
     name,
     description,
     initiators: initiators.id,
-    approval_required: APPROVAL_LEVELS.GENERAL_MANAGER,
+    approval_required: APPROVAL_LEVELS.DIRECT_MANAGER,
   });
 };
 

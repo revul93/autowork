@@ -3,7 +3,6 @@ const db = require('../../db.config');
 const { get_approval_levels } = require('../../../utils');
 
 const APPROVAL_LEVELS = get_approval_levels();
-
 const Workflow = db.define('Workflow', {
   id: {
     type: DataTypes.UUID,
@@ -27,7 +26,7 @@ const Workflow = db.define('Workflow', {
     type: DataTypes.STRING,
     allowNull: false,
     validate: {
-      isIn: [...Object.keys(APPROVAL_LEVELS)],
+      isIn: [[...Object.values(APPROVAL_LEVELS)]],
     },
   },
   initiators: {

@@ -1,5 +1,5 @@
 const get_data_field_types = () => ({
-  TEXTBLOCK: 'TEXT-BLOCK',
+  TEXTBLOCK: 'TEXTBLOCK',
   TEXT: 'TEXT',
   NUMBER: 'NUMBER',
   DATE: 'DATE',
@@ -11,7 +11,7 @@ const get_data_field_types = () => ({
 
 const get_approval_levels = () => ({
   NO_APPROVAL_REQUIRED: 'NO_APPROVAL_REQUIRED',
-  DIRECT_MNAGER: 'DIRECT_MANAGER',
+  DIRECT_MANAGER: 'DIRECT_MANAGER',
   DEPARTMENT_MANAGER: 'DEPARTMENT_MANAGER',
   GENERAL_MANAGER: 'GENERAL_MANAGER',
   FINANCE_MANAGER: 'FINANCE_MANAGER',

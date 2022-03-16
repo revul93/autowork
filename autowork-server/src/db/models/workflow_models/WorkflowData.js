@@ -15,7 +15,7 @@ const WorkflowData = db.define('WorkflowData', {
     type: DataTypes.STRING,
     allowNull: false,
     validate: {
-      isIn: [...Object.keys(DATAFIELDTYPES)],
+      isIn: [[...Object.values(DATAFIELDTYPES)]],
     },
   },
   name: {

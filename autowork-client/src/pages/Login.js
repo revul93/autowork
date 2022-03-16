@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import logo from '../images/logo.png';
 import loading_button from '../images/loading-button.gif';
-import { login, logout } from '../redux';
+import { login } from '../redux';
 const LOGIN_API = '/api/auth/login';
 const LOGIN_VERIFY_API = '/api/auth/verify_login';
 
@@ -272,7 +272,6 @@ const Login = (props) => {
 
 const mapDispatchToProps = (dispatch) => ({
   login: (token) => dispatch(login(token)),
-  logout: () => dispatch(logout()),
 });
 
 export default connect(null, mapDispatchToProps)(Login);

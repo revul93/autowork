@@ -17,7 +17,7 @@ const Document = db.define('Document', {
   status: {
     type: DataTypes.STRING,
     validate: {
-      isIn: [...Object.keys(DOCUMENT_STATUSES)],
+      isIn: [[...Object.values(DOCUMENT_STATUSES)]],
     },
   },
   workflow_id: {

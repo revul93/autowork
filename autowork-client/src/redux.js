@@ -1,24 +1,31 @@
 import { composeWithDevTools } from 'redux-devtools-extension';
 import { combineReducers, createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
-import jwt from 'jsonwebtoken';
+import jwtDecode from 'jwt-decode';
 const ACTIONTYPES = { LOGIN: 'LOGIN', LOGOUT: 'LOGOUT' };
 
-let token = sessionStorage.getItem('x-access-token');
+let token = sessionStorage.getItem('x-auth-token');
 let user_id = null;
-let is_logged_in = fakse;
+let employee_name = '';
+let role_title = '';
+let is_logged_in = false;
 if (token) {
-  const decoded_token = jwt.decode(token);
-  if (Date.now() >= decoded_token.exp * 1000) {
-    user_id = null;
-    is_logged_in = false;
-  } else {
+  const decoded_token = jwtDecode(token);
+  if (Date.now() <= decoded_token.exp * 1000) {
     user_id = decoded_token.user_id;
+    employee_name = decoded_token.employee_name;
+    role_title = decoded_token.role_title;
     is_logged_in = true;
   }
 }
 
-const initial_state = { token, user_id, is_logged_in };
+const initial_state = {
+  token,
+  user_id,
+  is_logged_in,
+  employee_name,
+  role_title,
+};
 
 export const login = (token) => ({
   type: ACTIONTYPES.LOGIN,
@@ -32,19 +39,24 @@ export const logout = () => ({
 const authReducer = (state = initial_state, action) => {
   switch (action.type) {
     case ACTIONTYPES.LOGIN:
-      sessionStorage.setItem('x-access-token', action.payload.token);
+      sessionStorage.setItem('x-auth-token', action.payload.token);
+      const decoded_token = jwtDecode(action.payload.token);
       return {
         ...state,
-        token: sessionStorage.getItem('x-access-token'),
-        user_id: jwt.decode(sessionStorage.getItem('x-access-token')).user_id,
+        token: action.payload.token,
+        user_id: decoded_token.user_id,
+        employee_name: decoded_token.employee_name,
+        role_title: decoded_token.role_title,
         is_logged_in: true,
       };
     case ACTIONTYPES.LOGOUT:
-      sessionStorage.removeItem('x-access-token');
+      sessionStorage.removeItem('x-auth-token');
       return {
         ...state,
         token: null,
         user_id: null,
+        employee_name: '',
+        role_title: '',
         is_logged_in: false,
       };
     default:
