@@ -1,16 +1,18 @@
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { connect } from 'react-redux';
-import UserDashBoard from './UserDashboard';
+
 const Home = (props) => {
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!props.is_logged_in) {
       navigate('/login', { replace: true });
+    } else {
+      navigate('/user_dashboard', { replace: true });
     }
-  });
-  return <UserDashBoard />;
+  }, [props.is_logged_in, navigate]);
+  return <></>;
 };
 
 const mapStateToProps = (state) => ({

@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import logo from '../images/logo.png';
-import loading_button from '../images/loading-button.gif';
+import loading_icon from '../images/loading-button.gif';
 import { login } from '../redux';
 const LOGIN_API = '/api/auth/login';
 const LOGIN_VERIFY_API = '/api/auth/verify_login';
@@ -186,7 +186,7 @@ const Login = (props) => {
         <img
           className='d-block mx-auto my-3 text-center'
           alt=''
-          src={loading_button}
+          src={loading_icon}
         />
       ) : (
         <input
@@ -245,7 +245,7 @@ const Login = (props) => {
         <img
           className='d-block mx-auto my-3 text-center'
           alt=''
-          src={loading_button}
+          src={loading_icon}
         />
       ) : (
         <input

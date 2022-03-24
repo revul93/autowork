@@ -1,4 +1,4 @@
-const seed_db = async () => {
+const SeedDb = async () => {
   const initializeStructure = require('./structure');
   const initializeWorkflows = require('./workflows');
 
@@ -6,4 +6,4 @@ const seed_db = async () => {
   await initializeWorkflows();
 };
 
-module.exports = { seed_db };
+module.exports = { SeedDb };

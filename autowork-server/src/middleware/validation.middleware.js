@@ -1,4 +1,4 @@
-const { body } = require('express-validator');
+const { check } = require('express-validator');
 const { validationResult } = require('express-validator');
 
 // DESCRIPTION: Look up for errors in request, flush them if any
@@ -13,15 +13,17 @@ const validate = (req, res, next) => {
   return next();
 };
 
-const validateId = (id) => [body(id, 'Parameter is not UUID').isUUID()];
+const validateId = (id) => [
+  check(id, 'Parameter is not UUID').isUUID() || query(),
+];
 
 const validateOptionalId = (id) => [
-  body(id, `Parameter is not UUID`).optional().isUUID(),
+  check(id, `Parameter is not UUID`).optional().isUUID(),
 ];
 
 const validateParameter = (parameter) => [
-  body(parameter, 'Parameter not found').notEmpty(),
-  body(parameter, 'Maximum length exceeded').isLength({
+  check(parameter, 'Parameter not found').notEmpty(),
+  check(parameter, 'Maximum length exceeded').isLength({
     max: 255,
   }),
 ];
@@ -31,7 +33,7 @@ const validateParameter = (parameter) => [
 // USEAGE: used to verify that a query is uniqe among MODEL
 // PARAMETERS: query <string> (e.g. user id, user email...etc), Model <Sequelize.Model> (e.g. User...etc)
 const validateUniqueness = (query, Model) => [
-  body(query, 'Parameter must be unique').custom(async (value) => {
+  check(query, 'Parameter must be unique').custom(async (value) => {
     if (
       await Model.findOne({
         where: { [query.split('_')[1]]: value },
@@ -45,7 +47,7 @@ const validateUniqueness = (query, Model) => [
 // DESCRIPTION: Check if any object exist in model with certain query
 // PARAMETERS: query <string> (e.g. user id, user email...etc), Model <Sequelize.Model> (e.g. User...etc)
 const validateExistance = (query, Model) => [
-  body(id, `${{ Model }} not found`).custom(async (value) => {
+  check(id, `${{ Model }} not found`).custom(async (value) => {
     if (!(await Model.findOne({ where: { [query]: value } }))) {
       throw new Error();
     }
@@ -53,12 +55,26 @@ const validateExistance = (query, Model) => [
 ];
 
 const validateStaffId = (id) => [
-  body(id, 'Staff id must be 6 integers, starting with 1').custom((value) =>
+  check(id, 'Staff id must be 6 integers, starting with 1').custom((value) =>
     RegExp(/1[0-9]{5}/).test(value) ? Promise.resolve() : Promise.reject(),
   ),
 ];
 
-const validateEmail = (email) => [body(email, 'Not a valid email').isEmail()];
+const validateEmail = (email) => [check(email, 'Not a valid email').isEmail()];
+
+const validateValuesArray = (array) => [
+  check(array, 'data_values array not exist or not well formatted').custom(
+    (array) =>
+      !Array.isArray(array) ||
+      !array.every((elem) => typeof elem.value === 'string')
+        ? Promise.reject()
+        : Promise.resolve(),
+  ),
+];
+
+const validateBoolean = (value) => [
+  check(value, `${value} must be true or false`).isBoolean(),
+];
 
 module.exports = {
   validate,
@@ -69,4 +85,6 @@ module.exports = {
   validateStaffId,
   validateEmail,
   validateExistance,
+  validateValuesArray,
+  validateBoolean,
 };

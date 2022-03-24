@@ -28,7 +28,7 @@ const auth = (req, res, next) => {
 const authAdmin = async (req, res, next) => {
   if (
     req.user.user_id !== (await nconf.get('ADMIN_UUID')) ||
-    !(await nconf.get('ADMIN_LOGGED_IN'))
+    !(await nconf.get('ADMIN_IS_LOGGED_IN'))
   ) {
     return res.status(401).json({
       message: 'Not authorized',

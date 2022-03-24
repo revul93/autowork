@@ -2,7 +2,7 @@ const initializeWorkflows = async () => {
   const initializeResignationWorkflow = require('./ResignationWorkflow');
   try {
     await initializeResignationWorkflow();
-    console.log('Corporate predefined worflows loaded successfully');
+    console.log('Predefined workflows loaded successfully');
   } catch (error) {
     console.error(error);
   }

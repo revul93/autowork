@@ -1,24 +1,18 @@
-const { handleErrors, isOptionsArray } = require('./misc.utils');
-const { sendAuthCode, sendUserLoginInfo } = require('./sendEmail');
-const { setAuthCode, isAuthCodeExpired } = require('./authCode.utils');
-const { getToken } = require('./token.utils');
-const { geAtttributeValueOfModel } = require('./db.utils');
-const {
-  get_data_field_types,
-  get_approval_levels,
-  get_document_statuses,
-} = require('./static');
+const { HandleErrors, ExtendApprovalSequence } = require('./misc.utils');
+const { SendAuthCode, SendUserLoginInfo } = require('./email.utils');
+const { SetAuthCode, IsAuthCodeExpired } = require('./authcode.utils');
+const { GetToken } = require('./token.utils');
+const { GetConstants } = require('./constants');
+const { validate } = require('./validate');
 
 module.exports = {
-  handleErrors,
-  isOptionsArray,
-  sendAuthCode,
-  sendUserLoginInfo,
-  setAuthCode,
-  isAuthCodeExpired,
-  getToken,
-  geAtttributeValueOfModel,
-  get_data_field_types,
-  get_approval_levels,
-  get_document_statuses,
+  HandleErrors,
+  ExtendApprovalSequence,
+  SendAuthCode,
+  SendUserLoginInfo,
+  SetAuthCode,
+  IsAuthCodeExpired,
+  GetToken,
+  GetConstants,
+  validate,
 };

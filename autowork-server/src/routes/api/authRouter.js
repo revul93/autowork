@@ -10,10 +10,10 @@ const {
   validateEmail,
 } = require('../../middleware/validation.middleware');
 const {
-  handleErrors,
-  setAuthCode,
-  isAuthCodeExpired,
-  getToken,
+  HandleErrors,
+  SetAuthCode,
+  IsAuthCodeExpired,
+  GetToken,
 } = require('../../utils');
 const { User } = require('../../db/models');
 
@@ -46,14 +46,14 @@ router.post(
       }
 
       // generate and save auth code
-      await setAuthCode(user);
+      await SetAuthCode(user);
 
       return res.json({
         message: 'Success',
         payload: { user_id: user.id },
       });
     } catch (error) {
-      handleErrors(error, res);
+      HandleErrors(error, res);
     }
   },
 );
@@ -79,7 +79,7 @@ router.post(
         });
       }
 
-      if (isAuthCodeExpired(user)) {
+      if (IsAuthCodeExpired(user)) {
         return res.status(401).json({
           message: 'Auth code timed out. Login again',
         });
@@ -91,14 +91,14 @@ router.post(
         });
       }
 
-      user.logged_in = true;
+      user.is_logged_in = true;
       await user.save();
       return res.json({
         message: 'Success',
-        payload: { token: await getToken(user) },
+        payload: { token: await GetToken(user) },
       });
     } catch (error) {
-      handleErrors(error, res);
+      HandleErrors(error, res);
     }
   },
 );
@@ -121,12 +121,12 @@ router.post(
         });
       }
 
-      await setAuthCode(user);
+      await SetAuthCode(user);
       return res.json({
         message: 'Success',
       });
     } catch (error) {
-      handleErrors(error);
+      HandleErrors(error);
     }
   },
 );
@@ -144,19 +144,19 @@ router.post('/api/auth/logout', auth, async (req, res) => {
       });
     }
 
-    if (!user.logged_in) {
+    if (!user.is_logged_in) {
       return res.status(400).json({
         message: 'User not logged in',
       });
     }
 
-    user.logged_in = false;
+    user.is_logged_in = false;
     await user.save();
     return res.json({
       message: 'Success',
     });
   } catch (error) {
-    handleErrors(error, res);
+    HandleErrors(error, res);
   }
 });
 
@@ -187,16 +187,16 @@ router.post(
         });
       }
 
-      nconf.set('ADMIN_LOGGED_IN', true);
+      nconf.set('ADMIN_IS_LOGGED_IN', true);
       await nconf.save();
       return res.json({
         message: 'Success',
         payload: {
-          token: await getToken({ id: await nconf.get('ADMIN_UUID') }),
+          token: await GetToken({ id: await nconf.get('ADMIN_UUID') }),
         },
       });
     } catch (error) {
-      handleErrors(error, res);
+      HandleErrors(error, res);
     }
   },
 );
@@ -207,19 +207,19 @@ router.post(
 // DESCRIPTION: Logout an admin
 router.post('/api/auth/admin_logout', [auth, authAdmin], async (req, res) => {
   try {
-    if (!(await nconf.get('ADMIN_LOGGED_IN'))) {
+    if (!(await nconf.get('ADMIN_IS_LOGGED_IN'))) {
       return res.status(400).json({
         message: 'Admin not logged in',
       });
     }
 
-    nconf.set('ADMIN_LOGGED_IN', false);
+    nconf.set('ADMIN_IS_LOGGED_IN', false);
     await nconf.save();
     return res.json({
       message: 'Success',
     });
   } catch (error) {
-    handleErrors(error, res);
+    HandleErrors(error, res);
   }
 });
 

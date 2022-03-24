@@ -1,6 +1,5 @@
-const setAssociation = async () => {
-  const Department = require('./structure_models/Department');
-  const Section = require('./structure_models/Section');
+const SetAssociation = async () => {
+  const Division = require('./structure_models/Division');
   const Role = require('./structure_models/Role');
   const Group = require('./structure_models/Group');
   const Employee = require('./structure_models/Employee');
@@ -13,13 +12,9 @@ const setAssociation = async () => {
   const DocumentTransaction = require('./workflow_models/DocumentTransaction');
   const DocumentData = require('./workflow_models/DocumentData');
 
-  // Department   1 ---> n   Section
-  Department.hasMany(Section, { foreignKey: 'department_id' });
   // Department   1 ---> n   Role
-  Department.hasOne(Role, { foreignKey: 'department_id' });
+  Division.hasOne(Role, { foreignKey: 'division_id' });
 
-  // Role   n ---> 1   Section
-  Section.hasMany(Role, { foreignKey: 'section_id' });
   // // Role   n ---> 1   Role
   Role.belongsTo(Role, { foreignKey: 'reports_to' });
   // Role   1 ---> n   Employee
@@ -43,7 +38,7 @@ const setAssociation = async () => {
     foreignKey: 'workflow_id',
   });
   // Workflow   1 --> n   Group
-  Workflow.belongsTo(Group, { foreignKey: 'initiators' });
+  Workflow.belongsTo(Group, { foreignKey: 'creators' });
 
   // WorkflowTransaction   1 ---> n   Role
   WorkflowTransaction.belongsTo(Role, { foreignKey: 'assigned_to' });
@@ -59,7 +54,7 @@ const setAssociation = async () => {
   });
   // Document   1 --> 1   Employee
   Document.belongsTo(Employee, {
-    foreignKey: 'initiator',
+    foreignKey: 'creator',
   });
   // Document   1 --> n   DocumentTransaction
   Document.hasMany(DocumentTransaction, {
@@ -85,4 +80,4 @@ const setAssociation = async () => {
   });
 };
 
-module.exports = { setAssociation };
+module.exports = { SetAssociation };

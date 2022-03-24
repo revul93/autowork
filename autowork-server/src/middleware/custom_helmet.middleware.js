@@ -2,7 +2,7 @@ const helmet = require('helmet');
 
 // DESCRIPTION: Custom helmet configuration
 //  HelmetJS used for security and protection
-const custom_helmet = () =>
+const CustomHelmet = () =>
   helmet({
     contentSecurityPolicy: {
       directives: {
@@ -30,4 +30,4 @@ const custom_helmet = () =>
     },
   });
 
-module.exports = custom_helmet;
+module.exports = CustomHelmet;

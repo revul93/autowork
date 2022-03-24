@@ -1,4 +1,4 @@
-const geAtttributeValueOfModel = async (attribute, value, Model) => {
+const GetAtttributeValueOfModel = async (attribute, value, Model) => {
   try {
     const queryResult = await Model.findOne({
       where: {
@@ -12,4 +12,6 @@ const geAtttributeValueOfModel = async (attribute, value, Model) => {
   }
 };
 
-module.exports = { geAtttributeValueOfModel };
+module.exports = {
+  GetAtttributeValueOfModel,
+};

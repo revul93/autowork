@@ -2,12 +2,21 @@ import { connect } from 'react-redux';
 import { logout } from '../redux';
 
 import logo from '../images/logo.png';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = (props) => {
+  const navigate = useNavigate();
   const handleLogout = (event) => {
     event.preventDefault();
     props.logout();
   };
+
+  useEffect(() => {
+    if (!props.is_logged_in) {
+      navigate('/login');
+    }
+  }, [props.is_logged_in, navigate]);
 
   return (
     <nav className='navbar navbar-expand-sm navbar-light bg-light py-0 px-lg-5'>
@@ -44,6 +53,7 @@ const Navbar = (props) => {
 };
 
 const mapStateToProps = (state) => ({
+  is_logged_in: state.auth.is_logged_in,
   employee_name: state.auth.employee_name,
 });
 

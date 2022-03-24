@@ -3,7 +3,7 @@ const winston = require('winston');
 const expressWinston = require('express-winston');
 
 // DESCRIPTION: winston logger for production environment
-const winston_logger = () =>
+const WinstonLogger = () =>
   expressWinston.logger({
     transports: [new winston.transports.Console()],
     format: winston.format.combine(
@@ -25,10 +25,10 @@ const winston_logger = () =>
   });
 
 // DESCRIPTION: morgan logger for development environment
-const morgan_logger = () => morgan('short');
+const MorganLogger = () => morgan('short');
 
 if (process.env.NODE_ENV === 'development') {
-  module.exports = morgan_logger;
+  module.exports = MorganLogger;
 } else {
-  module.exports = winston_logger;
+  module.exports = WinstonLogger;
 }

@@ -1,5 +1,4 @@
-const Department = require('./structure_models/Department');
-const Section = require('./structure_models/Section');
+const Division = require('./structure_models/Division');
 const Role = require('./structure_models/Role');
 const Group = require('./structure_models/Group');
 const Employee = require('./structure_models/Employee');
@@ -12,11 +11,10 @@ const Document = require('./workflow_models/Document');
 const DocumentTransaction = require('./workflow_models/DocumentTransaction');
 const DocumentData = require('./workflow_models/DocumentData');
 
-const { setAssociation } = require('./Association');
+const { SetAssociation } = require('./Association');
 
 module.exports = {
-  Department,
-  Section,
+  Division,
   Role,
   Group,
   Employee,
@@ -28,5 +26,5 @@ module.exports = {
   Document,
   DocumentTransaction,
   DocumentData,
-  setAssociation,
+  SetAssociation,
 };

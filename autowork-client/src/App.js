@@ -4,6 +4,7 @@ import { store } from './redux';
 import Login from './pages/Login';
 import Home from './pages/Home';
 import UserDashBoard from './pages/UserDashboard';
+import NewDocument from './pages/NewDocument';
 
 const App = () => {
   return (
@@ -15,6 +16,10 @@ const App = () => {
             <Route path='/home' element={<Home />} />
             <Route path='/login' element={<Login />} />
             <Route path='/user_dashboard' element={<UserDashBoard />} />
+            <Route
+              path='/new_document/:workflow_id'
+              element={<NewDocument />}
+            />
           </Routes>
         </div>
       </Router>

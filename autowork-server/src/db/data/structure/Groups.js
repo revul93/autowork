@@ -8,79 +8,37 @@ const EveryRole = async () => {
 
   const roles = await Role.findAll();
   roles.forEach(async (role) => {
-    let build = RolesGroups.build({
+    await RolesGroups.create({
       group_id: group.id,
       role_id: role.id,
     });
-    await build.save();
   });
 };
 
-const EveryNonSupervisorOrManager = async () => {
+const EveryLevelOneRole = async () => {
   const { RolesGroups, Group, Role } = require('../../models');
   const { Op } = require('sequelize');
 
   const group = await Group.create({
-    name: 'Every Non Supervisor Or Manager',
-    description:
-      'Every role except managers or supervisors in the corporate belongs to this group',
+    name: 'Every Level One Role',
+    description: 'Every level one role in corporate belongs to this group',
   });
 
   const roles = await Role.findAll({
     where: {
-      [Op.not]: {
-        [Op.or]: [
-          {
-            title: {
-              [Op.endsWith]: 'Supervisor',
-            },
-          },
-          {
-            title: {
-              [Op.endsWith]: 'Manager',
-            },
-          },
-        ],
-      },
+      [Op.not]: [{ title: { [Op.endsWith]: 'Manager' } }],
     },
   });
 
   roles.forEach(async (role) => {
-    let build = RolesGroups.build({
+    await RolesGroups.create({
       group_id: group.id,
       role_id: role.id,
     });
-    await build.save();
   });
 };
 
-const EverySupervisor = async () => {
-  const { RolesGroups, Group, Role } = require('../../models');
-  const { Op } = require('sequelize');
-
-  const group = await Group.create({
-    name: 'Every supervisor group',
-    description: 'Every supervisor role in the corporate belongs to this group',
-  });
-
-  const roles = await Role.findAll({
-    where: {
-      title: {
-        [Op.endsWith]: 'Supervisor',
-      },
-    },
-  });
-
-  roles.forEach(async (role) => {
-    let build = RolesGroups.build({
-      group_id: group.id,
-      role_id: role.id,
-    });
-    await build.save();
-  });
-};
-
-const EveryManager = async () => {
+const EveryManagerExceptGM = async () => {
   const { RolesGroups, Group, Role } = require('../../models');
   const { Op } = require('sequelize');
 
@@ -91,26 +49,42 @@ const EveryManager = async () => {
 
   const roles = await Role.findAll({
     where: {
-      title: {
-        [Op.endsWith]: 'Manager',
-      },
+      [Op.and]: [
+        { title: { [Op.endsWith]: 'Manager' } },
+        { division_id: { [Op.not]: null } },
+      ],
     },
   });
 
   roles.forEach(async (role) => {
-    let build = RolesGroups.build({
+    await RolesGroups.create({
       group_id: group.id,
       role_id: role.id,
     });
-    await build.save();
   });
+};
+
+const GMGroup = async () => {
+  const { RolesGroups, Group, Role } = require('../../models');
+
+  const group = await Group.create({
+    name: 'General Manager group',
+    description: 'A group contain general manage role only',
+  });
+
+  const role = await Role.findOne({
+    where: {
+      title: 'General Manager',
+    },
+  });
+  await RolesGroups.create({ group_id: group.id, role_id: role.id });
 };
 
 const initializeGroups = async () => {
   await EveryRole();
-  await EverySupervisor();
-  await EveryManager();
-  await EveryNonSupervisorOrManager();
+  await EveryLevelOneRole();
+  await EveryManagerExceptGM();
+  await GMGroup();
 };
 
 module.exports = initializeGroups;

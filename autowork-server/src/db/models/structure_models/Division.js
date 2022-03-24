@@ -1,9 +1,9 @@
 const { DataTypes } = require('sequelize');
-const { validate } = require('../../../utils');
 const db = require('../../db.config');
+const { validate } = require('../../../utils');
 
-const Group = db.define(
-  'Group',
+const Division = db.define(
+  'Division',
   {
     id: {
       type: DataTypes.UUID,
@@ -14,14 +14,10 @@ const Group = db.define(
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
-      validate: validate.IsGroupName,
-    },
-    description: {
-      type: DataTypes.STRING,
-      validate: validate.IsLongText,
+      validate: validate.IsDivisionName,
     },
   },
   { timestamps: false },
 );
 
-module.exports = Group;
+module.exports = Division;

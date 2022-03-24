@@ -1,4 +1,4 @@
-const getToken = async (user) => {
+const GetToken = async (user) => {
   const { Employee, Role } = require('../db/models');
   const JWT_KEY =
     process.env.JWT_KEY || require('crypto').randomBytes(64).toString('Hex');
@@ -28,4 +28,4 @@ const getToken = async (user) => {
   );
 };
 
-module.exports = { getToken };
+module.exports = { GetToken };

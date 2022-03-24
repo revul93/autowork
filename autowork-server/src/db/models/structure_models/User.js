@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
 const bcrypt = require('bcrypt');
 const db = require('../../db.config');
+const { validate } = require('../../../utils');
 
 const User = db.define(
   'User',
@@ -13,15 +14,13 @@ const User = db.define(
     username: {
       type: DataTypes.STRING,
       allowNull: false,
-      validate: {
-        is: /^[a-zA-Z]+[a-zA-Z0-9_]{5}[a-zA-Z0-9_]*/,
-      },
+      validate: validate.IsUsername,
     },
     password: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        is: /^(?=.*[0-9])[a-zA-Z0-9]{6,32}$/,
+        is: validate.IsPassword,
       },
     },
     auth_code: {
@@ -32,7 +31,7 @@ const User = db.define(
       type: DataTypes.INTEGER,
       allowNull: true,
     },
-    logged_in: {
+    is_logged_in: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
@@ -61,6 +60,7 @@ const User = db.define(
         }
       },
     },
+    timestamps: false,
   },
 );
 

@@ -1,6 +1,6 @@
 const nconf = require('nconf');
 const app = require('./app');
-const { get_db } = require('./db');
+const { GetDb } = require('./db');
 
 const HOSTNAME = process.env.HOSTNAME || 'localhost';
 const PORT = process.env.PORT || '5000';
@@ -13,7 +13,7 @@ const main = async () => {
     },
   });
   try {
-    await get_db();
+    await GetDb();
     console.log(`database connected`);
   } catch (error) {
     console.error(error);
