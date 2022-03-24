@@ -6,6 +6,8 @@ const ACTIONTYPES = { LOGIN: 'LOGIN', LOGOUT: 'LOGOUT' };
 
 let token = sessionStorage.getItem('x-auth-token');
 let user_id = null;
+let employee_id = null;
+let role_id = null;
 let employee_name = '';
 let role_title = '';
 let is_logged_in = false;
@@ -13,6 +15,8 @@ if (token) {
   const decoded_token = jwtDecode(token);
   if (Date.now() <= decoded_token.exp * 1000) {
     user_id = decoded_token.user_id;
+    employee_id = decoded_token.employee_id;
+    role_id = decoded_token.role_id;
     employee_name = decoded_token.employee_name;
     role_title = decoded_token.role_title;
     is_logged_in = true;
@@ -22,6 +26,8 @@ if (token) {
 const initial_state = {
   token,
   user_id,
+  employee_id,
+  role_id,
   is_logged_in,
   employee_name,
   role_title,
@@ -45,6 +51,8 @@ const authReducer = (state = initial_state, action) => {
         ...state,
         token: action.payload.token,
         user_id: decoded_token.user_id,
+        employee_id: decoded_token.employee_id,
+        role_id: decoded_token.role_id,
         employee_name: decoded_token.employee_name,
         role_title: decoded_token.role_title,
         is_logged_in: true,
@@ -55,6 +63,8 @@ const authReducer = (state = initial_state, action) => {
         ...state,
         token: null,
         user_id: null,
+        employee_id: null,
+        role_id: null,
         employee_name: '',
         role_title: '',
         is_logged_in: false,

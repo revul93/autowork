@@ -1,11 +1,15 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import { render } from 'react-dom';
+import { StrictMode } from 'react';
+import { CssBaseline, ThemeProvider } from '@mui/material';
 import App from './App';
-import 'bootstrap/dist/css/bootstrap.css';
+import theme from './theme';
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+render(
+  <StrictMode>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <App />
+    </ThemeProvider>
+  </StrictMode>,
   document.getElementById('root'),
 );
