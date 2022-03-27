@@ -87,20 +87,26 @@ router.post(
       // if it is create request, check for creation constraint to create
       if (workflow_transaction.order === 0) {
         // check for permission to create
+        const allowed_workflows = await Workflow.findAll({
+          where: {
+            creators: {
+              [Op.in]: (
+                await RolesGroups.findAll({
+                  where: { role_id: req.user.role_id },
+                })
+              ).map((role_group) => role_group.group_id),
+            },
+          },
+        });
+        if (!allowed_workflows || allowed_workflows.length === 0) {
+          return res.status(401).json({
+            message:
+              'You are not authorized to create a document of provided workflow',
+          });
+        }
+
         if (
-          !(
-            await Workflow.findAll({
-              where: {
-                creators: {
-                  [Op.in]: (
-                    await RolesGroups.findAll({
-                      where: { role_id: req.user.role_id },
-                    })
-                  ).map((role_group) => role_group.group_id),
-                },
-              },
-            })
-          )
+          !allowed_workflows
             .map((workflow) => workflow.id)
             .includes(workflow.id)
         ) {
@@ -112,17 +118,16 @@ router.post(
 
         // check if another document for the creater of selected workflow
         //  is in pending state
-        if (
-          await Document.findOne({
-            where: {
-              creator: req.user.user_id,
-              workflow_id: workflow.id,
-              status: {
-                [Op.or]: [STATUS.STARTED, STATUS.PENDING, STATUS.PROCESSING],
-              },
+        const duplicate_document = await Document.findOne({
+          where: {
+            creator: req.user.employee_id,
+            workflow_id: workflow.id,
+            status: {
+              [Op.or]: [STATUS.STARTED, STATUS.PENDING, STATUS.PROCESSING],
             },
-          })
-        ) {
+          },
+        });
+        if (duplicate_document) {
           return res.status(401).json({
             message:
               'Another document of this workflow exists for current user',
@@ -197,6 +202,7 @@ router.post(
         document_id: document.id,
         workflow_transaction_id: workflow_transaction.id,
         author: req.user.employee_id,
+        status: STATUS.COMPLETED,
       });
 
       const document_data = DocumentData.bulkBuild(
@@ -211,8 +217,6 @@ router.post(
       );
 
       // TODO: implement document termination
-
-      document_transaction.status = STATUS.COMPLETED;
 
       // if it is first transaction change document status to processing
       if (workflow_transaction.order === 1) {
@@ -236,9 +240,9 @@ router.post(
 
       await document.save();
       await document_transaction.save();
-      await Promise.all(
-        document_data.forEach(async (item) => await item.save()),
-      );
+      for (const item of document_data) {
+        await item.save();
+      }
       return res.json({
         message: 'Success',
         payload: {
@@ -452,7 +456,7 @@ router.get(
       });
 
       // check if no documents found
-      if (!documents) {
+      if (!documents || documents.length === 0) {
         return res.status(404).json({
           message: 'No documents awaiting for actions found',
         });
@@ -520,5 +524,33 @@ router.get(
     }
   },
 );
+
+// METHOD: GET
+// URI: /api/user/document/read_all
+// ACCESS: Logged in users
+// DESCRIPTION: Get all documents created by user
+// RETURN: documents <array of objects>
+router.get('/api/user/document/read_all', auth, async (req, res) => {
+  try {
+    const documents = await Document.findAll({
+      where: { creator: req.user.employee_id },
+      order: ['created_at'],
+      include: Workflow,
+    });
+
+    if (!documents || documents.length === 0) {
+      return res.status(404).json({
+        message: 'No documents found',
+      });
+    }
+
+    return res.json({
+      message: 'Success',
+      payload: { documents },
+    });
+  } catch (error) {
+    HandleErrors(error, res);
+  }
+});
 
 module.exports = router;

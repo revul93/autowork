@@ -35,19 +35,20 @@ router.get(
       );
 
       // find all workflows that initiated by any group that contains user
-      const workflows_of_employee = await Workflow.findAll({
+      const workflows = await Workflow.findAll({
         where: {
           creators: { [Op.in]: role_groups_array },
         },
       });
 
-      if (!workflows_of_employee) {
+      if (!workflows || workflows.length === 0) {
         return res.status(404).json({
           message: 'No workflow found for given employee',
         });
       }
       return res.json({
-        workflows_of_employee,
+        message: 'Success',
+        payload: { workflows },
       });
     } catch (error) {
       HandleErrors(error, res);

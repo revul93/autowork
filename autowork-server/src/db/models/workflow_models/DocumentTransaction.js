@@ -22,7 +22,7 @@ const DocumentTransaction = db.define(
     status: {
       type: DataTypes.STRING,
       validate: {
-        isIn: [...Object.values(STATUS)],
+        isIn: [[...Object.values(STATUS)]],
       },
     },
     author: {

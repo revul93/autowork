@@ -4,12 +4,11 @@ import { connect } from 'react-redux';
 
 const Home = (props) => {
   const navigate = useNavigate();
-
   useEffect(() => {
     if (!props.is_logged_in) {
       navigate('/login', { replace: true });
     } else {
-      navigate('/user_dashboard', { replace: true });
+      navigate('/user', { replace: true });
     }
   }, [props.is_logged_in, navigate]);
   return <></>;

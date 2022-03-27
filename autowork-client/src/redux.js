@@ -2,15 +2,15 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import { combineReducers, createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import jwtDecode from 'jwt-decode';
-const ACTIONTYPES = { LOGIN: 'LOGIN', LOGOUT: 'LOGOUT' };
+const ACTIONTYPES = {
+  LOGIN: 'LOGIN',
+  LOGOUT: 'LOGOUT',
+  PAGE_TITLE: 'PAGE_TITLE',
+};
 
 let token = sessionStorage.getItem('x-auth-token');
-let user_id = null;
-let employee_id = null;
-let role_id = null;
-let employee_name = '';
-let role_title = '';
-let is_logged_in = false;
+let user_id, employee_id, role_id, employee_name, role_title, is_logged_in;
+
 if (token) {
   const decoded_token = jwtDecode(token);
   if (Date.now() <= decoded_token.exp * 1000) {
@@ -23,7 +23,7 @@ if (token) {
   }
 }
 
-const initial_state = {
+const auth_initial_state = {
   token,
   user_id,
   employee_id,
@@ -42,7 +42,12 @@ export const logout = () => ({
   type: ACTIONTYPES.LOGOUT,
 });
 
-const authReducer = (state = initial_state, action) => {
+export const renameTitle = (page_title) => ({
+  type: ACTIONTYPES.PAGE_TITLE,
+  payload: { page_title },
+});
+
+const authReducer = (state = auth_initial_state, action) => {
   switch (action.type) {
     case ACTIONTYPES.LOGIN:
       sessionStorage.setItem('x-auth-token', action.payload.token);
@@ -74,7 +79,16 @@ const authReducer = (state = initial_state, action) => {
   }
 };
 
+const globalReducer = (state = { page_title: 'AUTOWORK' }, action) => {
+  switch (action.type) {
+    case ACTIONTYPES.PAGE_TITLE:
+      return { ...state, page_title: action.payload.page_title };
+    default:
+      return state;
+  }
+};
+
 export const store = createStore(
-  combineReducers({ auth: authReducer }),
+  combineReducers({ global: globalReducer, auth: authReducer }),
   composeWithDevTools(applyMiddleware(thunk)),
 );
