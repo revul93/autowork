@@ -60,7 +60,7 @@ const initializeHRDivision = async () => {
   await User.bulkCreate([
     {
       username: 'husam.zahra',
-      password: 'hqKWcXumy7k',
+      password: 'autowork',
       employee_id: HusamZahra.id,
     },
     {
@@ -70,7 +70,7 @@ const initializeHRDivision = async () => {
     },
     {
       username: 'arfa.yassin',
-      password: 'r5YOGBhKiok',
+      password: 'autowork',
       employee_id: ArfaYassin.id,
     },
     {

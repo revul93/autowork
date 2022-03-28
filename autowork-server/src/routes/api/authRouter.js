@@ -8,6 +8,7 @@ const {
   validateParameter,
   validateId,
   validateEmail,
+  validatePassword,
 } = require('../../middleware/validation.middleware');
 const {
   HandleErrors,
@@ -95,7 +96,10 @@ router.post(
       await user.save();
       return res.json({
         message: 'Success',
-        payload: { token: await GetToken(user) },
+        payload: {
+          token: await GetToken(user),
+          password_change_required: user.password_change_required,
+        },
       });
     } catch (error) {
       HandleErrors(error, res);
@@ -127,6 +131,42 @@ router.post(
       });
     } catch (error) {
       HandleErrors(error);
+    }
+  },
+);
+
+// METHOD: POST
+// URI: /api/auth/reset_password
+// ACCESS: Logged In Users
+// PARAMETERS:
+//  REQUIRED: password <string>, password_confirmation
+// DESCRIPTION: Generate and save auth code in database, then send it to user's email
+router.post(
+  '/api/auth/reset_password',
+  [
+    validatePassword('password'),
+    validatePassword('password_confirmation'),
+    validate,
+    auth,
+  ],
+  async (req, res) => {
+    const { password, password_confirmation } = req.body;
+    if (password !== password_confirmation) {
+      return res.status(400).json({
+        message: "Password don't match",
+      });
+    }
+
+    try {
+      const user = await User.findByPk(req.user.user_id);
+      user.password = password;
+      user.password_change_required = false;
+      await user.save();
+      return res.json({
+        message: 'Success',
+      });
+    } catch (error) {
+      HandleErrors(error, res);
     }
   },
 );

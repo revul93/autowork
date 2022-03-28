@@ -51,17 +51,17 @@ const InitializeFacilityDivision = async () => {
   await User.bulkCreate([
     {
       username: 'kadar.safi',
-      password: 'vIHBtwWs42s',
+      password: 'autowork',
       employee_id: KadarSafi.id,
     },
     {
       username: 'rashid.haidar',
-      password: 'God042NAsco',
+      password: 'autowork',
       employee_id: RashidHaidar.id,
     },
     {
       username: 'hussein.latif',
-      password: '0r9uIVJbvuo',
+      password: 'autowork',
       employee_id: HusseinLatif.id,
     },
   ]);

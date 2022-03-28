@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Grid from '@mui/material/Grid';
@@ -12,24 +12,38 @@ import Alert from '@mui/material/Alert';
 import { login } from '../../redux';
 import LoginForm from './LoginForm';
 import VerificationForm from './VerificationForm';
+import autowork_logo from '../../images/autowork-logo.png';
+import PasswordChangeForm from './PasswordChangeForm';
 
 const Login = (props) => {
+  const { is_logged_in, login } = props;
+  const navigate = useNavigate();
   const [state, setState] = useState({
     username: 'nuraddin.alfarsi',
-    password: 'Vk1AoPKo',
+    password: 'autowork',
     user_id: '',
     auth_code: '',
+    token: null,
+    password_change_required: true,
     is_loading: false,
-    error: false,
-    errorMessage: '',
+    error: '',
   });
 
-  const navigate = useNavigate();
   useEffect(() => {
-    if (props.token) {
-      navigate('/', { replace: true });
+    if (state.token && !state.password_change_required) {
+      login(state.token);
     }
-  }, [props.token, navigate]);
+
+    if (is_logged_in) {
+      return navigate('/user');
+    }
+  }, [
+    state.token,
+    state.password_change_required,
+    login,
+    is_logged_in,
+    navigate,
+  ]);
 
   return (
     <Grid container component='main' sx={{ height: '100vh' }}>
@@ -40,13 +54,13 @@ const Login = (props) => {
         md={6}
         lg={8}
         sx={{
-          backgroundImage: 'url(https://source.unsplash.com/random)',
+          backgroundImage: `url(${autowork_logo})`,
           backgroundRepeat: 'no-repeat',
           backgroundColor: (t) =>
             t.palette.mode === 'light'
               ? t.palette.grey[50]
               : t.palette.grey[900],
-          backgroundSize: 'cover',
+          backgroundSize: 'center',
           backgroundPosition: 'center',
         }}
       />
@@ -75,31 +89,31 @@ const Login = (props) => {
           </Typography>
           {!state.user_id ? (
             <LoginForm state={state} setState={setState} />
+          ) : state.token && state.password_change_required ? (
+            <PasswordChangeForm state={state} setState={setState} />
           ) : (
-            <VerificationForm state={state} setState={setState} login={login} />
+            <VerificationForm state={state} setState={setState} />
           )}
           <Snackbar
-            open={state.error}
+            open={state.error ? true : false}
             autoHideDuration={6000}
             anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
             onClose={() =>
               setState((state) => ({
                 ...state,
-                error: false,
-                errorMessage: '',
+                error: '',
               }))
             }>
             <Alert
               onClose={() =>
                 setState((state) => ({
                   ...state,
-                  error: false,
-                  errorMessage: '',
+                  error: '',
                 }))
               }
               severity='error'
               sx={{ width: '100%' }}>
-              {state.errorMessage}
+              {state.error}
             </Alert>
           </Snackbar>
         </Box>
@@ -110,6 +124,7 @@ const Login = (props) => {
 
 const mapStateToPorps = (state) => ({
   token: state.auth.token,
+  is_logged_in: state.auth.is_logged_in,
 });
 
 const mapDispatchToProps = (dispatch) => ({

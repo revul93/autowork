@@ -10,7 +10,6 @@ import Divider from '@mui/material/Divider';
 import List from '@mui/material/List';
 import MuiDrawer from '@mui/material/Drawer';
 import MuiAppBar from '@mui/material/AppBar';
-import { logout } from '../../redux';
 import UserNavigationList from './UserNavigationList';
 
 const Navigation = (props) => {
@@ -117,8 +116,4 @@ const mapStateToPorps = (state) => ({
   employee_name: state.auth.employee_name,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  logout: () => dispatch(logout()),
-});
-
-export default connect(mapStateToPorps, mapDispatchToProps)(Navigation);
+export default connect(mapStateToPorps, null)(Navigation);

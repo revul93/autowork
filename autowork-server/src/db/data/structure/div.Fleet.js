@@ -73,7 +73,7 @@ const InitializeFleetDivision = async () => {
   await User.bulkCreate([
     {
       username: 'imad.nour',
-      password: 'SaJ54nBCdHE',
+      password: 'autowork',
       employee_id: ImadNour.id,
     },
     {
@@ -83,17 +83,17 @@ const InitializeFleetDivision = async () => {
     },
     {
       username: 'maisara.rais',
-      password: 'o9aFDY208o4',
+      password: 'autowork',
       employee_id: MaisaraRais.id,
     },
     {
       username: 'rabeea.amir',
-      password: 'lXLYfqSt74M',
+      password: 'autowork',
       employee_id: RabeeaAmir.id,
     },
     {
       username: 'imad.dib',
-      password: '4CWfdTppquk',
+      password: 'autowork',
       employee_id: ImadDib.id,
     },
   ]);

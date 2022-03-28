@@ -6,14 +6,20 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Navigation from '../../components/Navigation';
 import { renameTitle } from '../../redux';
+import { useEffect } from 'react';
 
 const Dashboard = (props) => {
   const { is_logged_in, renameTitle } = props;
-  renameTitle('Dashboard');
   const navigate = useNavigate();
-  if (!is_logged_in) {
-    navigate('/', { replace: true });
-  }
+
+  useEffect(() => {
+    if (!is_logged_in) {
+      navigate('/', { replace: true });
+    }
+
+    renameTitle('Dashboard');
+  }, [renameTitle, is_logged_in, navigate]);
+
   return (
     <Box sx={{ display: 'flex' }}>
       <Navigation />

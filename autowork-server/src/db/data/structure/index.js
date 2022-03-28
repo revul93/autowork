@@ -21,7 +21,7 @@ const InitializeStructure = async () => {
     });
     await User.create({
       username: 'omar.jajah',
-      password: 'o1m9a9r3',
+      password: 'autowork',
       employee_id: GeneralManagerEmployee.id,
     });
     await Role.create({ title: 'DIRECT MANAGER' });

@@ -68,22 +68,22 @@ const InitializeAccountingDivision = async () => {
   await User.bulkCreate([
     {
       username: 'marid.hanif',
-      password: 'LklkxQpvc1o',
+      password: 'autowork',
       employee_id: MaridHanif.id,
     },
     {
       username: 'nazih.ismael',
-      password: 'OP2ZVdgUPu8',
+      password: 'autowork',
       employee_id: NazihIsmael.id,
     },
     {
       username: 'tarneem.ghazi',
-      password: 'IoNEt2fvOoo',
+      password: 'autowork',
       employee_id: TarneemGhazi.id,
     },
     {
       username: 'shakeeba.salahuddin',
-      password: 'v5klHw7h7dE',
+      password: 'autowork',
       employee_id: ShakeebaSalahuddin.id,
     },
     {

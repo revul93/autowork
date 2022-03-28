@@ -2,6 +2,7 @@ import { Provider } from 'react-redux';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
 import Login from './pages/Login';
+import Logout from './pages/Logout';
 import UserDashboard from './pages/User/Dashboard';
 import MyDocuments from './pages/User/MyDocuments';
 import CreateDocument from './pages/User/CreateDocument';
@@ -13,6 +14,7 @@ const App = () => (
       <Routes>
         <Route index element={<Home />} />
         <Route path='/login' element={<Login />} />
+        <Route path='/logout' element={<Logout />} />
         <Route path='/admin_login' element={<>Admin Login</>} />
         <Route path='/user' element={<UserDashboard />}>
           <Route path='document/get_all' element={<MyDocuments />} />

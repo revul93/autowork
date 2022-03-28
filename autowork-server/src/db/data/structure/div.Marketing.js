@@ -51,17 +51,17 @@ const InitializeMarketingDivision = async () => {
   await User.bulkCreate([
     {
       username: 'zayn.hambleton',
-      password: 'Y07BP6ai',
+      password: 'autowork',
       employee_id: ZaynHambleton.id,
     },
     {
       username: 'janene.phillips',
-      password: 'zH5pl8iT',
+      password: 'autowork',
       employee_id: JanenePhillips.id,
     },
     {
       username: 'said.jamail',
-      password: 'tT2eRHjzGuE',
+      password: 'autowork',
       employee_id: SaidJamail.id,
     },
   ]);

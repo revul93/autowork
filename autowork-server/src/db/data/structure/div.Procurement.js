@@ -51,7 +51,7 @@ const InitializeProcuremnetsDivision = async () => {
   await User.bulkCreate([
     {
       username: 'afra.amir',
-      password: 'x4bmX8ByIcg',
+      password: 'autowork',
       employee_id: AfraAmir.id,
     },
     {
@@ -61,7 +61,7 @@ const InitializeProcuremnetsDivision = async () => {
     },
     {
       username: 'islam.abdella',
-      password: 'c3YKr6aYJWg',
+      password: 'autowork',
       employee_id: IslamAbdella.id,
     },
   ]);

@@ -28,6 +28,13 @@ const validateParameter = (parameter) => [
   }),
 ];
 
+const validatePassword = (password) => [
+  check(password, 'Password must be at least 8 character').isLength({
+    min: 8,
+    max: 255,
+  }),
+];
+
 // DESCRIPTION: Search for query in given MODEL
 //  if found then throw an error
 // USEAGE: used to verify that a query is uniqe among MODEL
@@ -80,6 +87,7 @@ module.exports = {
   validate,
   validateId,
   validateParameter,
+  validatePassword,
   validateUniqueness,
   validateOptionalId,
   validateStaffId,

@@ -2,6 +2,7 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import { combineReducers, createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import jwtDecode from 'jwt-decode';
+
 const ACTIONTYPES = {
   LOGIN: 'LOGIN',
   LOGOUT: 'LOGOUT',
@@ -50,6 +51,7 @@ export const renameTitle = (page_title) => ({
 const authReducer = (state = auth_initial_state, action) => {
   switch (action.type) {
     case ACTIONTYPES.LOGIN:
+      console.log('LOGIN');
       sessionStorage.setItem('x-auth-token', action.payload.token);
       const decoded_token = jwtDecode(action.payload.token);
       return {
@@ -74,8 +76,9 @@ const authReducer = (state = auth_initial_state, action) => {
         role_title: '',
         is_logged_in: false,
       };
-    default:
+    default: {
       return state;
+    }
   }
 };
 

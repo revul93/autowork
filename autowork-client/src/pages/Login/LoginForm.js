@@ -32,8 +32,7 @@ const LoginForm = (props) => {
       console.error(error);
       setState((state) => ({
         ...state,
-        error: true,
-        errorMessage: error.response.data.message,
+        error: error.response.data.message,
       }));
     } finally {
       setState((state) => ({ ...state, is_loading: false }));

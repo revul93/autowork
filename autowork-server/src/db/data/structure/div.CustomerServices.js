@@ -52,22 +52,22 @@ const InitializeCustomerServicesDivision = async () => {
   await User.bulkCreate([
     {
       username: 'ubab.rizk',
-      password: 'BvDt0bnNMQo',
+      password: 'autowork',
       employee_id: UbabRizk.id,
     },
     {
       username: 'zukhruf.karim',
-      password: 'DlHSHm4WEiY',
+      password: 'autowork',
       employee_id: ZukhrufKarim.id,
     },
     {
       username: 'rawhiyah.sadiq',
-      password: 'VmWyB1PKkeY',
+      password: 'autowork',
       employee_id: RawhiyahSadiq.id,
     },
     {
       username: 'reyhan.assaf',
-      password: 'EftCJgOtYmg',
+      password: 'autowork',
       employee_id: ReyhanAssaf.id,
     },
   ]);

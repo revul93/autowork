@@ -31,6 +31,10 @@ const User = db.define(
       type: DataTypes.INTEGER,
       allowNull: true,
     },
+    password_change_required: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+    },
     is_logged_in: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,

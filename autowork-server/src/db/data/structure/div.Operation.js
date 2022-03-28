@@ -59,27 +59,27 @@ const initializeOperationDivision = async () => {
   await User.bulkCreate([
     {
       username: 'faris.naaji',
-      password: 'p4zK7M1g',
+      password: 'autowork',
       employee_id: FaridNaaji.id,
     },
     {
       username: 'ruqayyah.elghazzawy',
-      password: 'Wfux3dt9',
+      password: 'autowork',
       employee_id: RuqayyahElghazzawy.id,
     },
     {
       username: 'myranda.mark',
-      password: 'y3Pciicv',
+      password: 'autowork',
       employee_id: MyrandaMark.id,
     },
     {
       username: 'chyna.watts',
-      password: 'y84wjnAS',
+      password: 'autowork',
       employee_id: ChynaWatts.id,
     },
     {
       username: 'shahd.winslow',
-      password: 'Veke7fBU',
+      password: 'autowork',
       employee_id: ShahdWinslow.id,
     },
   ]);

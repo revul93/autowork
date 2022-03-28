@@ -9,13 +9,12 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 
 const VerificationForm = (props) => {
-  const { state, setState, login } = props;
+  const { state, setState } = props;
 
-  const RESEND_CODE_INTERVAL = 10;
+  const RESEND_CODE_INTERVAL = 300;
   const [canResend, setCanResend] = useState(false);
   const [resendTimer, setResendTimer] = useState(RESEND_CODE_INTERVAL);
   const [message, setMessage] = useState('');
-  const [showMessage, setShowMessage] = useState(false);
 
   useEffect(() => {
     if (!resendTimer) {
@@ -50,19 +49,18 @@ const VerificationForm = (props) => {
       );
 
       if (response.status === 200) {
-        sessionStorage.setItem('x-auth-token', response.data.payload.token);
-        login(response.data.payload.token);
         setState((state) => ({
           ...state,
+          token: response.data.payload.token,
+          password_change_required:
+            response.data.payload.password_change_required,
         }));
-      } else {
       }
     } catch (error) {
       console.error(error);
       setState((state) => ({
         ...state,
-        error: true,
-        errorMessage: error.response.data.message,
+        error: error.response.data.message,
       }));
     } finally {
       setState((state) => ({ ...state, is_loading: false }));
@@ -81,14 +79,12 @@ const VerificationForm = (props) => {
       );
       if (response.status === 200) {
         setMessage('Another code is sent to your email');
-        setShowMessage(true);
       }
     } catch (error) {
       console.error(error);
       setState((state) => ({
         ...state,
-        error: true,
-        errorMessage: 'Server failed sending code',
+        error: 'Server failed sending code',
       }));
     } finally {
       setCanResend(false);
@@ -138,17 +134,15 @@ const VerificationForm = (props) => {
         Submit
       </Button>
       <Snackbar
-        open={showMessage}
+        open={message ? true : false}
         autoHideDuration={6000}
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         onClose={() => {
           setMessage('');
-          setShowMessage(false);
         }}>
         <Alert
           onClose={() => {
             setMessage('');
-            setShowMessage(false);
           }}
           severity='info'
           sx={{ width: '100%' }}>

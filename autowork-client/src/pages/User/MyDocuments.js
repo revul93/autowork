@@ -16,17 +16,18 @@ import CreateIcon from '@mui/icons-material/Create';
 const MyDocuments = (props) => {
   const { is_logged_in, token, renameTitle } = props;
   const navigate = useNavigate();
-  renameTitle('My Documents');
-
-  if (!is_logged_in) {
-    navigate('/', { replace: true });
-  }
 
   const [documents, setDocuments] = useState();
   const [doneLoading, setDoneLoading] = useState(false);
   const [error, setError] = useState();
 
   useEffect(() => {
+    if (!is_logged_in) {
+      return navigate('/');
+    }
+
+    renameTitle('My Documents');
+
     const getDocuments = async () => {
       try {
         const response = await axios.get('/api/user/document/read_all', {
@@ -44,7 +45,7 @@ const MyDocuments = (props) => {
     };
 
     getDocuments();
-  }, [setDocuments, token]);
+  }, [is_logged_in, navigate, setDocuments, token, renameTitle]);
 
   const getStatusColor = (status) => {
     switch (status) {

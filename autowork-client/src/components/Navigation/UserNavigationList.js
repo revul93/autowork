@@ -12,48 +12,47 @@ import HelpCenterIcon from '@mui/icons-material/HelpCenter';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ArticleIcon from '@mui/icons-material/Article';
 
-const primary_list = [
-  {
-    title: 'Dashboard',
-    url: '/user',
-    icon: <DashboardIcon />,
-  },
-  {
-    title: 'My Documents',
-    url: '/user/document/get_all',
-    icon: <ArticleIcon />,
-  },
-  {
-    title: 'My Tasks',
-    url: '/user/task/get_all',
-    icon: <TaskIcon />,
-  },
-  {
-    title: 'My Approvals',
-    url: '/user/approval/get_all',
-    icon: <ApprovalIcon />,
-  },
-];
-
-const secondary_list = [
-  {
-    title: 'Reset Password',
-    url: '/user/reset_password',
-    icon: <KeyIcon />,
-  },
-  {
-    title: 'Help',
-    url: '/help',
-    icon: <HelpCenterIcon />,
-  },
-  {
-    title: 'Logout',
-    url: '/logout',
-    icon: <LogoutIcon />,
-  },
-];
-
 const UserNavigationList = () => {
+  const primary_list = [
+    {
+      title: 'Dashboard',
+      url: '/user',
+      icon: <DashboardIcon />,
+    },
+    {
+      title: 'My Documents',
+      url: '/user/document/get_all',
+      icon: <ArticleIcon />,
+    },
+    {
+      title: 'My Tasks',
+      url: '/user/task/get_all',
+      icon: <TaskIcon />,
+    },
+    {
+      title: 'My Approvals',
+      url: '/user/approval/get_all',
+      icon: <ApprovalIcon />,
+    },
+  ];
+
+  const secondary_list = [
+    {
+      title: 'Reset Password',
+      url: '/user/reset_password',
+      icon: <KeyIcon />,
+    },
+    {
+      title: 'Help',
+      url: '/help',
+      icon: <HelpCenterIcon />,
+    },
+    {
+      title: 'Logout',
+      url: '/logout',
+      icon: <LogoutIcon />,
+    },
+  ];
   const navigate = useNavigate();
 
   return (

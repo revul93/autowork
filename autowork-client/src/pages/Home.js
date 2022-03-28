@@ -1,17 +1,20 @@
-import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 const Home = (props) => {
+  const { is_logged_in } = props;
   const navigate = useNavigate();
+
   useEffect(() => {
-    if (!props.is_logged_in) {
-      navigate('/login', { replace: true });
+    if (is_logged_in) {
+      return navigate('/user');
     } else {
-      navigate('/user', { replace: true });
+      return navigate('/login');
     }
-  }, [props.is_logged_in, navigate]);
-  return <></>;
+  }, [is_logged_in, navigate]);
+
+  return null;
 };
 
 const mapStateToProps = (state) => ({

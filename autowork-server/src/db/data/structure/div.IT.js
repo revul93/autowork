@@ -73,32 +73,32 @@ const initializeITDivision = async () => {
   await User.bulkCreate([
     {
       username: 'shamil.ahmed',
-      password: 'qX32Dn55',
+      password: 'autowork',
       employee_id: ShamilAhmed.id,
     },
     {
       username: 'mahir.naaji',
-      password: 'BO9Vta71',
+      password: 'autowork',
       employee_id: MahirNaaji.id,
     },
     {
       username: 'faris.kader',
-      password: 'fuz5xGMJ',
+      password: 'autowork',
       employee_id: FarisKader.id,
     },
     {
       username: 'afif.elhashem',
-      password: 'SzXJ6qm7',
+      password: 'autowork',
       employee_id: AfifElhashem.id,
     },
     {
       username: 'khayrat.saqqaf',
-      password: 'd8wBUlqk',
+      password: 'autowork',
       employee_id: KhayratSaqqaf.id,
     },
     {
       username: 'nuraddin.alfarsi',
-      password: 'Vk1AoPKo',
+      password: 'autowork',
       employee_id: NuraddinAlfarsi.id,
     },
   ]);
