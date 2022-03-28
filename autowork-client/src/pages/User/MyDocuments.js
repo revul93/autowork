@@ -73,7 +73,7 @@ const MyDocuments = (props) => {
       {doneLoading && (
         <>
           {(error && (
-            <Alert severity='error' sx={{ width: '100%' }}>
+            <Alert severity='info' sx={{ width: '100%' }}>
               {error}
             </Alert>
           )) || (

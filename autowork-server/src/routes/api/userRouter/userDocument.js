@@ -21,6 +21,7 @@ const {
   DocumentTransaction,
   DocumentData,
   RolesGroups,
+  Employee,
 } = require('../../../db/models');
 const router = express.Router();
 
@@ -377,6 +378,53 @@ router.put(
 );
 
 // METHOD: GET
+// URI: /api/user/document/read_all_approvals_of_auth_user
+// ACCESS: Logged in users who has access to document
+// DESCRIPTION: Get documents that awaiting for approval from auth user
+// RETURN: documents <array of objects>
+router.get(
+  '/api/user/document/read_all_approvals_of_auth_user',
+  auth,
+  async (req, res) => {
+    try {
+      // get all documents
+      const documents = await Document.findAll({
+        include: [{ model: Employee }, { model: Workflow }],
+      });
+
+      const approvalDocuments = [];
+      for (const document of documents) {
+        const approvals = JSON.parse(document.approvals);
+        // check if user in approval sequence and approval status is pending
+        const approval_index = approvals.findIndex(
+          (approval) =>
+            approval.role_id === req.user.role_id &&
+            approval.status !== STATUS.PENDING,
+        );
+        if (approval_index === -1) {
+          continue;
+        } else {
+          approvalDocuments.push(document);
+        }
+      }
+
+      if (approvalDocuments.length === 0) {
+        return res.status(404).json({ message: 'No documents found' });
+      }
+
+      return res.json({
+        message: 'Success',
+        payload: {
+          documents: approvalDocuments,
+        },
+      });
+    } catch (error) {
+      HandleErrors(error, res);
+    }
+  },
+);
+
+// METHOD: GET
 // URI: /api/user/document/read_awaiting_approvals_from_auth_user
 // ACCESS: Logged in users who has access to document
 // DESCRIPTION: Get documents that awaiting for approval from auth user
@@ -393,6 +441,7 @@ router.get(
             [Op.or]: [STATUS.STARTED, STATUS.PENDING],
           },
         },
+        include: [{ model: Employee }, { model: Workflow }],
       });
 
       const awaiting_documents = [];
@@ -418,7 +467,7 @@ router.get(
       if (awaiting_documents.length === 0) {
         return res
           .status(404)
-          .json({ message: 'No documents awaiting actions found' });
+          .json({ message: 'No documents awaiting approvals found' });
       }
 
       return res.json({

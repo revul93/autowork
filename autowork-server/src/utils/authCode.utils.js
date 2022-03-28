@@ -6,7 +6,7 @@ const GetEpochInSeconds = () => {
 const GenerateAuthCode = () => {
   const AUTH_CODE_LENGTH = parseInt(process.env.AUTH_CODE_LENGTH) || 6;
   if (process.env.NODE_ENV === 'development') {
-    return ABC123;
+    return 'ABC123';
   }
   return Math.round(
     Math.pow(36, AUTH_CODE_LENGTH + 1) -

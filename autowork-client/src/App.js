@@ -6,6 +6,7 @@ import Logout from './pages/Logout';
 import UserDashboard from './pages/User/Dashboard';
 import MyDocuments from './pages/User/MyDocuments';
 import CreateDocument from './pages/User/CreateDocument';
+import MyApprovals from './pages/User/MyApprovals';
 import { store } from './redux';
 
 const App = () => (
@@ -21,7 +22,7 @@ const App = () => (
           <Route path='document/create' element={<CreateDocument />} />
           <Route path='document/get_one/:document_id' element={<>Document</>} />
           <Route path='task/get_all' element={<>All Tasks</>} />
-          <Route path='approval/get_all' element={<>All Approvals</>} />
+          <Route path='approval/get_all' element={<MyApprovals />} />
           <Route path='reset_password' element={<>Reset Password*</>} />
         </Route>
         <Route path='/help' element={<>Help</>} />
