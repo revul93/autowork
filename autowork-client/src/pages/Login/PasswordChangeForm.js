@@ -14,8 +14,19 @@ const PasswordChangeForm = (props) => {
   const [password, setPassword] = useState('');
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [message, setMessage] = useState('');
+  const [done, setDone] = useState(false);
 
-  useEffect(() => {});
+  useEffect(() => {
+    if (done) {
+      setMessage('Password changed successfully. Redirecting ...');
+      setInterval(() => {
+        setState((state) => ({
+          ...state,
+          password_change_required: false,
+        }));
+      }, 1500);
+    }
+  }, [done, setMessage, setState]);
 
   const {
     register,
@@ -41,13 +52,7 @@ const PasswordChangeForm = (props) => {
       );
 
       if (response.status === 200) {
-        setMessage('Password changed successfully. Redirecting ...');
-        setInterval(() => {
-          setState((state) => ({
-            ...state,
-            password_change_required: false,
-          }));
-        }, 3000);
+        setDone(true);
       }
     } catch (error) {
       console.error(error);

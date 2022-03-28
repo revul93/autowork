@@ -38,7 +38,10 @@ const CreateDocument = (props) => {
     }
     renameTitle('Create Document');
     if (done) {
-      return navigate('/user/document/get_all');
+      setMessage('Document submitted successfully');
+      setInterval(() => {
+        return navigate('/user/document/get_all');
+      }, 1000);
     }
 
     const getWorkflows = async () => {
@@ -109,10 +112,7 @@ const CreateDocument = (props) => {
       );
 
       if (response.status === 200) {
-        setMessage('Document submitted successfully');
-        setInterval(() => {
-          setDone(true);
-        }, 1500);
+        setDone(true);
       }
     } catch (error) {
       console.error(error);

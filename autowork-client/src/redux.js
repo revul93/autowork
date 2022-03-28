@@ -51,7 +51,6 @@ export const renameTitle = (page_title) => ({
 const authReducer = (state = auth_initial_state, action) => {
   switch (action.type) {
     case ACTIONTYPES.LOGIN:
-      console.log('LOGIN');
       sessionStorage.setItem('x-auth-token', action.payload.token);
       const decoded_token = jwtDecode(action.payload.token);
       return {

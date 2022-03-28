@@ -20,16 +20,20 @@ const MyApprovals = (props) => {
   const { is_logged_in, token, renameTitle, employee_id } = props;
   const navigate = useNavigate();
 
-  const [documents, setDocuments] = useState([]);
-  const [allDocuments, setAllDocuments] = useState([]);
-  const [selectedDocument, setSelectedDocument] = useState();
-  const [submitting, setSubmitting] = useState(false);
-  const [approved, setApproved] = useState(null);
-  const [notes, setNotes] = useState({});
   const [doneLoading, setDoneLoading] = useState(false);
-  const [submittingError, setSubmittingError] = useState('');
-  const [error, setError] = useState();
-  const [done, setDone] = useState();
+
+  const [awaitingDocuments, setAwaitingDocuments] = useState([]);
+  const [awaitingDocumentsLoadingError, setAwaitingDocumentsLoadingError] =
+    useState('');
+
+  const [allDocuments, setAllDocuments] = useState([]);
+  const [allDocumentsLoadingerror, setAllDocumentsLoadingerror] = useState('');
+
+  const [update, setUpdate] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+
+  const [notes, setNotes] = useState({});
+  const [submittingError, setSubmittingError] = useState({});
 
   useEffect(() => {
     renameTitle('My Approvals');
@@ -47,11 +51,11 @@ const MyApprovals = (props) => {
           },
         );
         if (response.status === 200) {
-          setDocuments(response.data.payload.documents);
+          setAwaitingDocuments(response.data.payload.documents);
         }
       } catch (error) {
         console.error(error);
-        setError(error.response.data.message);
+        setAwaitingDocumentsLoadingError(error.response.data.message);
       } finally {
         setDoneLoading(true);
       }
@@ -71,61 +75,52 @@ const MyApprovals = (props) => {
         }
       } catch (error) {
         console.error(error);
-        setError(error.response.data.message);
+        setAllDocumentsLoadingerror(error.response.data.message);
       } finally {
         setDoneLoading(true);
       }
     };
 
-    if (done) {
-      navigate('/user/approval/get_all');
-    }
     getAwaitingDocuments();
     getAllDocuments();
 
-    const update_approval = async () => {
-      try {
-        const response = await axios.put(
-          '/api/user/document/update_approval',
-          {
-            document_id: selectedDocument.id,
-            is_approved: approved,
-          },
-          {
-            headers: {
-              'x-auth-token': token,
-            },
-          },
-        );
-        if (response.status === 200) {
-          setDone(true);
-        }
-      } catch (error) {
-        console.error(error);
-        setError(error.response.data.message);
-      } finally {
-        setApproved(null);
-        setSubmitting(false);
-      }
-
-      return;
-    };
-
-    if (!submittingError && submitting) {
-      update_approval(approved);
+    if (update) {
+      setUpdate(false);
+      setAwaitingDocumentsLoadingError('');
+      setAllDocumentsLoadingerror('');
+      getAwaitingDocuments();
+      getAllDocuments();
     }
-  }, [
-    is_logged_in,
-    navigate,
-    setDocuments,
-    token,
-    renameTitle,
-    done,
-    selectedDocument,
-    submittingError,
-    submitting,
-    approved,
-  ]);
+  }, [is_logged_in, navigate, token, renameTitle, update]);
+
+  const handleApprove = async (event, document_id, is_approved) => {
+    event.preventDefault();
+    console.log(submittingError[document_id]);
+    if (!is_approved && !notes[document_id]) {
+      setSubmittingError((state) => ({
+        ...state,
+        [document_id]: 'Note must be supplied if document rejected',
+      }));
+      return;
+    }
+    try {
+      setSubmitting(true);
+      const response = await axios.put(
+        '/api/user/document/update_approval',
+        { document_id, is_approved, note: notes[document_id] },
+        { headers: { 'x-auth-token': token } },
+      );
+      if (response.status === 200) {
+        setUpdate(true);
+      }
+    } catch (error) {
+      console.error(error);
+      setSubmittingError({ [document_id]: error.response.data.message });
+    } finally {
+      setSubmitting(false);
+      setUpdate(true);
+    }
+  };
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -143,23 +138,18 @@ const MyApprovals = (props) => {
   return (
     <>
       {doneLoading && (
-        <>
-          <Typography variant='h5' margin={'normal'}>
-            Documents Awaiting Approvals
-          </Typography>
-          {(error && (
-            <Alert severity='info' sx={{ width: '100%' }}>
-              {error}
-            </Alert>
-          )) || (
-            <>
-              {submittingError && (
-                <Alert severity='error' sx={{ width: '100%' }}>
-                  {submittingError}
-                </Alert>
-              )}
+        <Grid container spacing={2} margin='normal' direction='column'>
+          <Grid item>
+            <Typography variant='h5' margin={'normal'}>
+              Documents awaiting my approval
+            </Typography>
+            {(awaitingDocumentsLoadingError && (
+              <Alert severity='info' sx={{ width: '100%' }}>
+                {awaitingDocumentsLoadingError}
+              </Alert>
+            )) || (
               <Grid container spacing={2} margin='normal'>
-                {documents.map((document) => (
+                {awaitingDocuments.map((document) => (
                   <Grid item xs={12} key={document.id}>
                     <Paper elevation={3}>
                       <Card>
@@ -200,144 +190,152 @@ const MyApprovals = (props) => {
                             </Grid>
                           </CardContent>
                         </CardActionArea>
-                        {(document.status === 'STARTED' ||
-                          document.status === 'PENDING') && (
-                          <CardActions
-                            style={{
-                              display: 'flex',
-                              justifyContent: 'center',
-                              margin: 'auto',
-                            }}>
-                            <Grid
-                              container
-                              direction='column'
-                              spacing={1}
-                              mb={2}
-                              alignItems={'center'}>
-                              <Grid item>
-                                <Button
-                                  sx={{ m: 1 }}
-                                  variant='contained'
-                                  color='success'
-                                  startIcon={<CheckCircleIcon />}
-                                  onClick={() => {
-                                    setSubmittingError('');
-                                    setSubmitting(true);
-                                    setApproved(true);
-                                    setSelectedDocument(document);
-                                  }}
-                                  disabled={submitting}>
-                                  Approve
-                                </Button>
-                                <Button
-                                  sx={{ m: 1 }}
-                                  variant='contained'
-                                  color='error'
-                                  startIcon={<CancelIcon />}
-                                  onClick={() => {
-                                    if (!notes[document.id]) {
-                                      setSubmittingError('Note must be filled');
-                                    } else {
-                                      setSubmitting(true);
-                                      setApproved(false);
-                                      setSelectedDocument(document);
-                                    }
-                                  }}
-                                  disabled={submitting}>
-                                  Reject
-                                </Button>
-                              </Grid>
-                              <Grid item width={3 / 4}>
-                                <TextField
-                                  label='Note'
-                                  style={{
-                                    display: 'block',
-                                  }}
-                                  fullWidth
-                                  error={submittingError.includes('Note')}
-                                  value={notes[document.id] || ''}
-                                  onChange={(event) => {
-                                    setSubmittingError('');
-                                    setNotes((state) => ({
-                                      ...state,
-                                      [document.id]: event.target.value,
-                                    }));
-                                  }}
-                                />
-                              </Grid>
+                        <CardActions
+                          style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            margin: 'auto',
+                          }}>
+                          <Grid
+                            container
+                            direction='column'
+                            spacing={1}
+                            mb={2}
+                            alignItems={'center'}>
+                            <Grid item>
+                              <Button
+                                sx={{ m: 1 }}
+                                variant='contained'
+                                color='success'
+                                startIcon={<CheckCircleIcon />}
+                                onClick={(event) =>
+                                  handleApprove(event, document.id, true)
+                                }
+                                disabled={submitting}>
+                                Approve
+                              </Button>
+                              <Button
+                                sx={{ m: 1 }}
+                                variant='contained'
+                                color='error'
+                                startIcon={<CancelIcon />}
+                                onClick={(event) =>
+                                  handleApprove(event, document.id, false)
+                                }
+                                disabled={submitting}>
+                                Reject
+                              </Button>
                             </Grid>
-                          </CardActions>
-                        )}
+                            <Grid item width={3 / 4}>
+                              <TextField
+                                label='Note'
+                                style={{
+                                  display: 'block',
+                                }}
+                                fullWidth
+                                error={submittingError[document.id]?.includes(
+                                  'Note',
+                                )}
+                                value={notes[document.id] || ''}
+                                onChange={(event) => {
+                                  setSubmittingError((state) => ({
+                                    ...state,
+                                    [document.id]: '',
+                                  }));
+                                  setNotes((state) => ({
+                                    ...state,
+                                    [document.id]: event.target.value,
+                                  }));
+                                }}
+                              />
+                            </Grid>
+                          </Grid>
+                        </CardActions>
                       </Card>
                     </Paper>
                   </Grid>
                 ))}
               </Grid>
-            </>
-          )}
-          <Grid container spacing={2} margin={2}>
-            <Typography variant='h5'>My Approvals</Typography>
-            {allDocuments.map((document) => (
-              <Grid item xs={12} key={document.id}>
-                <Paper elevation={3}>
-                  <Card>
-                    <CardActionArea
-                      onClick={() =>
-                        navigate(`/user/document/get_one/${document.id}`)
-                      }>
-                      <CardContent>
-                        <Grid container direction='row'>
-                          <Grid item xs={10} pl={3}>
-                            <Grid container direction='column'>
-                              <Grid item>
-                                <Typography variant='h5'>
-                                  {document.Workflow.name}
-                                </Typography>
+            )}
+          </Grid>
+          <Grid item>
+            <Typography variant='h5' margin={'normal'}>
+              My Approvals
+            </Typography>
+            {(allDocumentsLoadingerror && (
+              <Alert severity='info' sx={{ width: '100%' }}>
+                {allDocumentsLoadingerror}
+              </Alert>
+            )) || (
+              <Grid container spacing={2} margin={2}>
+                {allDocuments.map((document) => (
+                  <Grid item xs={12} key={document.id}>
+                    <Paper elevation={3}>
+                      <Card>
+                        <CardActionArea
+                          onClick={() =>
+                            navigate(`/user/document/get_one/${document.id}`)
+                          }>
+                          <CardContent>
+                            <Grid container direction='row'>
+                              <Grid item xs={10} pl={3}>
+                                <Grid container direction='column'>
+                                  <Grid item>
+                                    <Typography variant='h5'>
+                                      {document.Workflow.name}
+                                    </Typography>
+                                  </Grid>
+                                  <Grid item>
+                                    <Typography
+                                      variant='body2'
+                                      color='text.secondary'>
+                                      {`Created by: ${
+                                        document.Employee.name
+                                      } | ${
+                                        document.Employee.staff_id
+                                      } , at: ${new Date(
+                                        document.created_at,
+                                      ).toLocaleString()}`}
+                                    </Typography>
+                                  </Grid>
+                                </Grid>
                               </Grid>
-                              <Grid item>
+                              <Grid xs={2} item alignSelf='center'>
                                 <Typography
-                                  variant='body2'
-                                  color='text.secondary'>
-                                  {`Created by: ${document.Employee.name} | ${
-                                    document.Employee.staff_id
-                                  } , at: ${new Date(
-                                    document.created_at,
-                                  ).toLocaleString()}`}
+                                  color={getStatusColor(
+                                    JSON.parse(document.approvals).find(
+                                      (approval) =>
+                                        approval.author === employee_id,
+                                    ).status,
+                                  )}>
+                                  {
+                                    JSON.parse(document.approvals).find(
+                                      (approval) =>
+                                        approval.author === employee_id,
+                                    ).status
+                                  }
+                                </Typography>
+                                <Typography variant='body2'>
+                                  ON:{' '}
+                                  {
+                                    JSON.parse(document.approvals).find(
+                                      (approval) =>
+                                        approval.author === employee_id,
+                                    ).date
+                                  }
                                 </Typography>
                               </Grid>
                             </Grid>
-                          </Grid>
-                          <Grid xs={2} item alignSelf='center'>
-                            <Typography
-                              color={getStatusColor(
-                                JSON.parse(document.approvals).find(
-                                  (approval) => approval.author === employee_id,
-                                ).status,
-                              )}>
-                              {
-                                JSON.parse(document.approvals).find(
-                                  (approval) => approval.author === employee_id,
-                                ).status
-                              }
-                            </Typography>
-                            <Typography variant='body2'>
-                              ON:{' '}
-                              {
-                                JSON.parse(document.approvals).find(
-                                  (approval) => approval.author === employee_id,
-                                ).date
-                              }
-                            </Typography>
-                          </Grid>
-                        </Grid>
-                      </CardContent>
-                    </CardActionArea>
-                  </Card>
-                </Paper>
+                          </CardContent>
+                        </CardActionArea>
+                      </Card>
+                    </Paper>
+                  </Grid>
+                ))}
               </Grid>
-            ))}
+            )}
           </Grid>
-        </>
+        </Grid>
       )}
     </>
   );

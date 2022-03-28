@@ -355,11 +355,12 @@ router.put(
           });
         } else {
           approvals[approval_index] = user_approval;
+          if (!req.body.is_approved) {
+            document.status = STATUS.REJECTED;
+          }
           // if user is the last one in approval sequence
-          if (approval_index === approvals.length - 1) {
-            document.status = req.body.is_approved
-              ? STATUS.APPROVED
-              : STATUS.REJECTED;
+          if (approval_index === approvals.length - 1 && req.body.is_approved) {
+            document.status = STATUS.APPROVED;
           }
         }
       }
@@ -390,6 +391,10 @@ router.get(
       // get all documents
       const documents = await Document.findAll({
         include: [{ model: Employee }, { model: Workflow }],
+        order: [
+          ['created_at', 'DESC'],
+          ['status', 'ASC'],
+        ],
       });
 
       const approvalDocuments = [];
@@ -407,7 +412,6 @@ router.get(
           approvalDocuments.push(document);
         }
       }
-
       if (approvalDocuments.length === 0) {
         return res.status(404).json({ message: 'No documents found' });
       }
@@ -442,6 +446,10 @@ router.get(
           },
         },
         include: [{ model: Employee }, { model: Workflow }],
+        order: [
+          ['created_at', 'DESC'],
+          ['status', 'ASC'],
+        ],
       });
 
       const awaiting_documents = [];
@@ -502,6 +510,10 @@ router.get(
             [Op.or]: [STATUS.APPROVED, STATUS.PROCESSING],
           },
         },
+        order: [
+          ['created_at', 'DESC'],
+          ['status', 'ASC'],
+        ],
       });
 
       // check if no documents found
@@ -583,7 +595,10 @@ router.get('/api/user/document/read_all', auth, async (req, res) => {
   try {
     const documents = await Document.findAll({
       where: { creator: req.user.employee_id },
-      order: ['created_at'],
+      order: [
+        ['created_at', 'DESC'],
+        ['status', 'ASC'],
+      ],
       include: Workflow,
     });
 
