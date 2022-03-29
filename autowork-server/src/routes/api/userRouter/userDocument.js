@@ -66,7 +66,7 @@ router.post(
       }
 
       const document = req.body.document_id
-        ? Document.findByPk(req.body.document_id)
+        ? await Document.findByPk(req.body.document_id)
         : Document.build({
             workflow_id: workflow.id,
             status: STATUS.STARTED,
@@ -150,6 +150,7 @@ router.post(
           workflow_transaction.order === 1 &&
           document.status !== STATUS.APPROVED
         ) {
+          console.log(document);
           return res.status(404).json({
             message: 'Document is not approved yet',
           });
@@ -163,11 +164,12 @@ router.post(
                 order: workflow_transaction.order - 1,
               },
             });
-          const previous_document_transaction = DocumentTransaction.findOne({
-            where: {
-              workflow_transaction_id: previous_workflow_transaction.id,
-            },
-          });
+          const previous_document_transaction =
+            await DocumentTransaction.findOne({
+              where: {
+                workflow_transaction_id: previous_workflow_transaction.id,
+              },
+            });
 
           if (previous_document_transaction.status !== STATUS.COMPLETED) {
             return res.status(401).json({
@@ -491,6 +493,81 @@ router.get(
 );
 
 // METHOD: GET
+// URI: /api/user/document/read_all_actions_of_auth_user
+// ACCESS: Logged in users who has access to document
+// DESCRIPTION: Get all documents that has action from auth user
+// RETURN: documents <array of objects>
+router.get(
+  '/api/user/document/read_all_actions_of_auth_user',
+  auth,
+  async (req, res) => {
+    try {
+      // get all documents with approved or processing status
+      const documents = await Document.findAll({
+        where: {
+          status: {
+            [Op.or]: [STATUS.PROCESSING, STATUS.COMPLETED, STATUS.TERMINATED],
+          },
+        },
+        order: [
+          ['created_at', 'DESC'],
+          ['status', 'ASC'],
+        ],
+        include: [{ model: Employee }, { model: Workflow }],
+      });
+
+      // check if no documents found
+      if (!documents || documents.length === 0) {
+        return res.status(404).json({
+          message: 'No documents found',
+        });
+      }
+
+      const all_documents = [];
+      for (const document of documents) {
+        const document_transaction = await DocumentTransaction.findOne({
+          where: {
+            document_id: document.id,
+            author: req.user.employee_id,
+            status: {
+              [Op.in]: [STATUS.COMPLETED, STATUS.TERMINATED],
+            },
+          },
+        });
+
+        if (!document_transaction) {
+          continue;
+        }
+
+        const workflow_transaction = await WorkflowTransaction.findByPk(
+          document_transaction.workflow_transaction_id,
+        );
+
+        if (workflow_transaction.order > 0 && document_transaction) {
+          all_documents.push({
+            ...document.dataValues,
+            document_transaction,
+          });
+        }
+      }
+
+      if (all_documents.length === 0) {
+        return res.status(404).json({ message: 'No documents found' });
+      }
+
+      return res.json({
+        message: 'Success',
+        payload: {
+          documents: all_documents,
+        },
+      });
+    } catch (error) {
+      HandleErrors(error, res);
+    }
+  },
+);
+
+// METHOD: GET
 // URI: /api/user/document/read_awaiting_actions_from_auth_user
 // ACCESS: Logged in users who has access to document
 // DESCRIPTION: Get documents that awaiting for actions from auth user
@@ -514,6 +591,7 @@ router.get(
           ['created_at', 'DESC'],
           ['status', 'ASC'],
         ],
+        include: [{ model: Employee }, { model: Workflow }],
       });
 
       // check if no documents found
@@ -535,36 +613,52 @@ router.get(
           },
         });
 
-        // check if no workflow transaction is found
         if (!workflow_transaction) {
-          return res.status(404).json({
-            message: 'No workflow transaction assigned to user found',
-          });
+          continue;
         }
 
-        // if workflow transaction order is not the first transaction
-        //  check that previous transaction is completed
-        if (workflow_transaction.order > 1) {
-          const previous_workflow_transaction =
-            await WorkflowTransaction.findOne({
-              where: {
-                workflow_id: workflow.id,
-                order: workflow_transaction.order - 1,
-              },
-            });
-          if (previous_workflow_transaction.status === STATUS.COMPLETED) {
+        const document_transaction = await DocumentTransaction.findOne({
+          where: {
+            document_id: document.id,
+            workflow_transaction_id: workflow_transaction.id,
+          },
+        });
+
+        // check if no document transaction is found means transaction is waiting
+        if (!document_transaction) {
+          const workflow_transaction_data = await WorkflowData.findAll({
+            where: { workflow_transaction_id: workflow_transaction.id },
+          });
+          // check if previous transaction
+          if (workflow_transaction.order === 0) {
             awaiting_documents.push({
               ...document.dataValues,
-              workflow_transaction_id: workflow_transaction.id,
-              workflow_transaction_order: workflow_transaction.order,
+              workflow_transaction,
+              workflow_transaction_data,
             });
+          } else {
+            const previous_document_transaction =
+              await DocumentTransaction.findOne({
+                where: {
+                  document_id: document.id,
+                  workflow_transaction_id: (
+                    await WorkflowTransaction.findOne({
+                      where: {
+                        workflow_id: workflow.id,
+                        order: workflow_transaction.order - 1,
+                      },
+                    })
+                  ).id,
+                },
+              });
+            if (previous_document_transaction.status === STATUS.COMPLETED) {
+              awaiting_documents.push({
+                ...document.dataValues,
+                workflow_transaction,
+                workflow_transaction_data,
+              });
+            }
           }
-        } else if (workflow_transaction.order === 1) {
-          awaiting_documents.push({
-            ...document.dataValues,
-            workflow_transaction_id: workflow_transaction.id,
-            workflow_transaction_order: workflow_transaction.order,
-          });
         }
       }
 

@@ -95,7 +95,6 @@ const MyApprovals = (props) => {
 
   const handleApprove = async (event, document_id, is_approved) => {
     event.preventDefault();
-    console.log(submittingError[document_id]);
     if (!is_approved && !notes[document_id]) {
       setSubmittingError((state) => ({
         ...state,

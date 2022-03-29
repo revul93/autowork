@@ -18,12 +18,12 @@ const InitializeFacilityDivision = async () => {
   });
   // --> Officers
   const BuildingOfficer = await Role.create({
-    title: 'SocialMediaOfficer',
+    title: 'Building Officer',
     division_id: Facility.id,
     reports_to: FacilityManager.id,
   });
   const PostmailOfficer = await Role.create({
-    title: 'Traditional Facility Officer',
+    title: 'Postmail Officer',
     division_id: Facility.id,
     reports_to: FacilityManager.id,
   });

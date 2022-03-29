@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import DashboardIcon from '@mui/icons-material/Dashboard';
 import Divider from '@mui/material/Divider';
 import TaskIcon from '@mui/icons-material/Task';
 import ApprovalIcon from '@mui/icons-material/Approval';
@@ -14,11 +13,6 @@ import ArticleIcon from '@mui/icons-material/Article';
 
 const UserNavigationList = () => {
   const primary_list = [
-    {
-      title: 'Dashboard',
-      url: '/user',
-      icon: <DashboardIcon />,
-    },
     {
       title: 'My Documents',
       url: '/user/document/get_all',

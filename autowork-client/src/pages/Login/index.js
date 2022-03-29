@@ -35,7 +35,7 @@ const Login = (props) => {
     }
 
     if (is_logged_in) {
-      return navigate('/user');
+      return navigate('/user/document/get_all');
     }
   }, [
     state.token,

@@ -7,6 +7,7 @@ import UserDashboard from './pages/User/Dashboard';
 import MyDocuments from './pages/User/MyDocuments';
 import CreateDocument from './pages/User/CreateDocument';
 import MyApprovals from './pages/User/MyApprovals';
+import MyTasks from './pages/User/MyTasks';
 import { store } from './redux';
 
 const App = () => (
@@ -21,7 +22,7 @@ const App = () => (
           <Route path='document/get_all' element={<MyDocuments />} />
           <Route path='document/create' element={<CreateDocument />} />
           <Route path='document/get_one/:document_id' element={<>Document</>} />
-          <Route path='task/get_all' element={<>All Tasks</>} />
+          <Route path='task/get_all' element={<MyTasks />} />
           <Route path='approval/get_all' element={<MyApprovals />} />
           <Route path='reset_password' element={<>Reset Password*</>} />
         </Route>

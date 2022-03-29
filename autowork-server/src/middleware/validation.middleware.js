@@ -73,7 +73,10 @@ const validateValuesArray = (array) => [
   check(array, 'data_values array not exist or not well formatted').custom(
     (array) =>
       !Array.isArray(array) ||
-      !array.every((elem) => typeof elem.value === 'string')
+      !array.every(
+        (elem) =>
+          typeof elem.value === 'string' || typeof elem.value === 'boolean',
+      )
         ? Promise.reject()
         : Promise.resolve(),
   ),
