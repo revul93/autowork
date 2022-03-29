@@ -6,16 +6,16 @@ const {
   validateParameter,
   validateUniqueness,
   validateOptionalId,
-} = require('../../middleware/validation.middleware');
+} = require('../../../middleware/validation.middleware');
 const { Op } = require('sequelize');
-const { handleErrors } = require('../../utils');
+const { handleErrors } = require('../../../utils');
 const {
   Workflow,
   WorkflowHeader,
   WorkflowTransaction,
   Group,
   WorkflowDataField,
-} = require('../../db');
+} = require('../../../db/models');
 
 router.get(
   '/api/workflow/read_one_by_id',
