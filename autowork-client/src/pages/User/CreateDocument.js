@@ -199,10 +199,12 @@ const CreateDocument = (props) => {
                                     ? true
                                     : datafield.type ===
                                         DATAFIELDTYPES.NUMBER &&
+                                      datafield.min &&
                                       datafield.min < formData[datafield.name]
                                     ? true
                                     : datafield.type ===
                                         DATAFIELDTYPES.NUMBER &&
+                                      datafield.max &&
                                       datafield.max > formData[datafield.name]
                                     ? true
                                     : false

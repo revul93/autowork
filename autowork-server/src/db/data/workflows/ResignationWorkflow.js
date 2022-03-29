@@ -12,8 +12,9 @@ const ResignationWorkflow = async () => {
 
   const name = 'Resignation';
   const description = 'Resignation Workflow';
+
   const creators = await Group.findOne({
-    name: 'Every Level One Role',
+    where: { name: 'Every role group' },
   });
   const approval_sequence = [
     (await Role.findOne({ where: { title: CONSTANTS.MISC.DIRECT_MANAGER } }))

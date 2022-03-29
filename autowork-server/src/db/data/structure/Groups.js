@@ -26,7 +26,13 @@ const EveryLevelOneRole = async () => {
 
   const roles = await Role.findAll({
     where: {
-      [Op.not]: [{ title: { [Op.endsWith]: 'Manager' } }],
+      [Op.not]: [
+        {
+          title: {
+            [Op.endsWith]: '%Manager',
+          },
+        },
+      ],
     },
   });
 
@@ -80,11 +86,28 @@ const GMGroup = async () => {
   await RolesGroups.create({ group_id: group.id, role_id: role.id });
 };
 
+const RentalServiceOfficers = async () => {
+  const { RolesGroups, Group, Role } = require('../../models');
+
+  const group = await Group.create({
+    name: 'Rental Service Officers group',
+    description: 'A group contain rental service officers',
+  });
+
+  const role = await Role.findOne({
+    where: {
+      title: 'Rental Services Officer',
+    },
+  });
+  await RolesGroups.create({ group_id: group.id, role_id: role.id });
+};
+
 const initializeGroups = async () => {
   await EveryRole();
   await EveryLevelOneRole();
   await EveryManagerExceptGM();
   await GMGroup();
+  await RentalServiceOfficers();
 };
 
 module.exports = initializeGroups;
