@@ -24,6 +24,8 @@ const {
   RolesGroups,
   Employee,
   User,
+  Role,
+  Division,
 } = require('../../../../db/models');
 
 const CONSTANTS = GetConstants();
@@ -269,34 +271,115 @@ router.get(
   [...validateId('document_id'), validate, auth],
   async (req, res) => {
     try {
-      let result;
-      const document = await Document.findByPk(req.query.document_id, {
-        include: [{ model: Workflow }, { model: Employee }],
-      });
-
-      const document_transactions = await DocumentTransaction.findAll({
-        where: { document_id: document.id },
-        include: [{ model: Employee }, { model: WorkflowTransaction }],
-      });
-
-      const transactions_and_data = [];
-      for (const document_transaction of document_transactions) {
-        const document_transaction_data = await DocumentData.findOne({
-          where: { document_transaction_id: document_transaction.id },
-          include: [{ model: WorkflowData }],
-        });
-        transactions_and_data.push({});
-      }
-
+      const document = await Document.findByPk(req.query.document_id);
       if (!document) {
-        return res.status(404).json({
-          message: 'No document found',
-        });
+        return res.status(404).json({ message: 'Document not found' });
+      }
+      const workflow = await Workflow.findByPk(document.workflow_id);
+      if (!workflow) {
+        return res.status(404).json({ message: 'Workflow not found' });
       }
 
+      const workflow_transactions = await WorkflowTransaction.findAll({
+        where: { workflow_id: workflow.id },
+      });
+
+      const creator = await Employee.findByPk(document.creator);
+      const creator_role = await Role.findByPk(creator.role_id);
+      const creator_division = await Division.findByPk(
+        creator_role.division_id,
+      );
       return res.json({
         message: 'Success',
-        payload: { document: { ...document, ...transactions_and_data } },
+        payload: {
+          document: {
+            name: workflow.name,
+            created_at: document.created_at,
+            status: document.status,
+            creator_name: creator.name,
+            creator_staff_id: creator.staff_id,
+            creator_role: creator_role.title,
+            creator_division: creator_division.name,
+            approvals: await Promise.all(
+              JSON.parse(document.approvals).map(async (approval) => ({
+                from: (await Role.findByPk(approval.role_id)).title,
+                author: approval.author,
+                status: approval.status,
+                note: approval.note,
+                date: approval.date,
+              })),
+            ),
+            transactions: await Promise.all(
+              workflow_transactions.map(async (transaction) => ({
+                order: transaction.order,
+                assigned_to:
+                  transaction.assigned_to &&
+                  (
+                    await Role.findByPk(transaction.assigned_to)
+                  ).title,
+                status:
+                  (
+                    await DocumentTransaction.findOne({
+                      where: { workflow_transaction_id: transaction.id },
+                    })
+                  )?.status || 'PENDING',
+                author_name:
+                  ((
+                    await DocumentTransaction.findOne({
+                      where: { workflow_transaction_id: transaction.id },
+                    })
+                  )?.author &&
+                    (
+                      await Employee.findByPk(
+                        (
+                          await DocumentTransaction.findOne({
+                            where: { workflow_transaction_id: transaction.id },
+                          })
+                        ).author,
+                      )
+                    ).name) ||
+                  '',
+                author_staff_id:
+                  ((
+                    await DocumentTransaction.findOne({
+                      where: { workflow_transaction_id: transaction.id },
+                    })
+                  )?.author &&
+                    (
+                      await Employee.findByPk(
+                        (
+                          await DocumentTransaction.findOne({
+                            where: { workflow_transaction_id: transaction.id },
+                          })
+                        ).author,
+                      )
+                    ).staff_id) ||
+                  '',
+                created_At:
+                  (
+                    await DocumentTransaction.findOne({
+                      where: { workflow_transaction_id: transaction.id },
+                    })
+                  )?.created_At || '',
+                data: await Promise.all(
+                  (
+                    await WorkflowData.findAll({
+                      where: { workflow_transaction_id: transaction.id },
+                    })
+                  ).map(async (datafield) => ({
+                    label: datafield.label,
+                    value:
+                      (
+                        await DocumentData.findOne({
+                          where: { workflow_data_id: datafield.id },
+                        })
+                      )?.value || '',
+                  })),
+                ),
+              })),
+            ),
+          },
+        },
       });
     } catch (error) {
       HandleErrors(error, res);

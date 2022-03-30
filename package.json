@@ -23,7 +23,6 @@
   },
   "homepage": "https://github.com/revul93/autowork#readme",
   "dependencies": {
-    "@reduxjs/toolkit": "^1.8.0",
     "concurrently": "^7.0.0"
   }
 }

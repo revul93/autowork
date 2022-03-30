@@ -34,13 +34,6 @@ const StationaryRequestWorkflow = async () => {
     {
       order: 1,
       assigned_to: (
-        await Role.findOne({ where: { title: 'Payroll Accountant' } })
-      ).id,
-      workflow_id: workflow.id,
-    },
-    {
-      order: 2,
-      assigned_to: (
         await Role.findOne({ where: { title: 'General Procurements Officer' } })
       ).id,
       workflow_id: workflow.id,
