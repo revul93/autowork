@@ -8,8 +8,9 @@ const {
   validateUniqueness,
   validateOptionalId,
 } = require('../../../middleware/validation.middleware');
-const { handleErrors } = require('../../../utils');
-const { Role, Section, Division } = require('../../../db/models');
+const { Op } = require('sequelize');
+const { HandleErrors } = require('../../../utils');
+const { Role, Division } = require('../../../db/models');
 
 router.post(
   '/api/role/create',
@@ -132,18 +133,31 @@ router.get(
 
 router.get('/api/role/read_all', async (req, res) => {
   try {
-    const roles = await Role.findAll();
+    const roles = await Role.findAll({
+      where: {
+        [Op.not]: [{ title: 'DIRECT MANAGER' }],
+      },
+    });
     if (roles && roles.length < 1) {
       return res.status(404).json({
         message: 'Roles not found',
       });
     }
+    const result = [];
+    for (const role of roles) {
+      result.push({
+        ...role.dataValues,
+        reports_to: await Role.findByPk(role.reports_to),
+        division: await Division.findByPk(role.division_id),
+      });
+    }
+
     return res.json({
       message: 'Success',
-      payload: { roles },
+      payload: { roles: result },
     });
   } catch (error) {
-    handleErrors(error, res);
+    HandleErrors(error, res);
   }
 });
 

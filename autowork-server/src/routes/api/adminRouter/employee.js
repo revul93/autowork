@@ -9,8 +9,8 @@ const {
   validateStaffId,
   validateEmail,
 } = require('../../../middleware/validation.middleware');
-const { handleErrors } = require('../../../utils');
-const { Employee, Role } = require('../../../db/models');
+const { HandleErrors } = require('../../../utils');
+const { Employee, Role, User } = require('../../../db/models');
 
 router.post(
   '/api/employee/create',
@@ -103,12 +103,31 @@ router.get(
   },
 );
 
+// router.get('/api/employee/read_all', async (req, res) => {
+//   try {
+//     const employees = await Employee.findAll();
+//     if (employees && employees.length < 1) {
+//       return res.status(404).json({
+//         message: 'Employees not found',
+//       });
+//     }
+//     return res.json({
+//       message: 'Success',
+//       payload: { employees },
+//     });
+//   } catch (error) {
+//     handleErrors(error, res);
+//   }
+// });
+
 router.get('/api/employee/read_all', async (req, res) => {
   try {
-    const employees = await Employee.findAll();
+    const employees = await Employee.findAll({
+      include: User,
+    });
     if (employees && employees.length < 1) {
       return res.status(404).json({
-        message: 'Employees not found',
+        message: 'Uers not found',
       });
     }
     return res.json({
@@ -116,58 +135,58 @@ router.get('/api/employee/read_all', async (req, res) => {
       payload: { employees },
     });
   } catch (error) {
-    handleErrors(error, res);
+    HandleErrors(error, res);
   }
 });
 
-// router.put(
-//   '/api/employee/update',
-//   [
-//     ...validateId('employee_id'),
-//     ...validateEmployeeCode('employee_code'),
-//     ...validateUniqueness('employee_code', Employee),
-//     ...validateParameter('employee_name'),
-//     ...validateEmail('employee_email'),
-//     ...validateUniqueness('employee_email', Employee),
-//     ...validateId('role_id'),
-//     validate,
-//   ],
-//   async (req, res) => {
-//     const {
-//       employee_id,
-//       employee_code,
-//       employee_name,
-//       employee_email,
-//       role_id,
-//     } = req.body;
-//     try {
-//       const employee = await Employee.findByPk(employee_id);
-//       if (!employee) {
-//         return res.status(404).json({
-//           message: 'Employee not found',
-//         });
-//       }
-//       employee.code = employee_code;
-//       employee.name = employee_name;
-//       employee.email = employee_email;
-//       const role = await Role.findByPk(role_id);
-//       if (!role) {
-//         return res.status(404).json({
-//           message: 'Role not found',
-//         });
-//       }
-//       employee.role_id = role_id;
+router.put(
+  '/api/employee/update',
+  [
+    ...validateId('employee_id'),
+    ...validateStaffId('employee_code'),
+    ...validateUniqueness('employee_code', Employee),
+    ...validateParameter('employee_name'),
+    ...validateEmail('employee_email'),
+    ...validateUniqueness('employee_email', Employee),
+    ...validateId('role_id'),
+    validate,
+  ],
+  async (req, res) => {
+    const {
+      employee_id,
+      employee_code,
+      employee_name,
+      employee_email,
+      role_id,
+    } = req.body;
+    try {
+      const employee = await Employee.findByPk(employee_id);
+      if (!employee) {
+        return res.status(404).json({
+          message: 'Employee not found',
+        });
+      }
+      employee.code = employee_code;
+      employee.name = employee_name;
+      employee.email = employee_email;
+      const role = await Role.findByPk(role_id);
+      if (!role) {
+        return res.status(404).json({
+          message: 'Role not found',
+        });
+      }
+      employee.role_id = role_id;
 
-//       await employee.save();
-//       return res.json({
-//         message: 'Success',
-//         data: { employee },
-//       });
-//     } catch (error) {
-//       handleErrors(error, res);
-//     }
-//   },
-// );
+      await employee.save();
+      return res.json({
+        message: 'Success',
+        data: { employee },
+      });
+    } catch (error) {
+      handleErrors(error, res);
+    }
+  },
+);
 
 router.delete(
   '/api/employee/delete',
@@ -188,7 +207,7 @@ router.delete(
         message: 'Success',
       });
     } catch (error) {
-      handleErrors(error, res);
+      HandleErrors(error, res);
     }
   },
 );

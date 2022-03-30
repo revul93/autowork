@@ -17,8 +17,6 @@ const NewUserWorkflow = async () => {
   });
 
   const approval_sequence = [
-    (await Role.findOne({ where: { title: CONSTANTS.MISC.DIRECT_MANAGER } }))
-      .id,
     (await Role.findOne({ where: { title: 'HR Manager' } })).id,
     (await Role.findOne({ where: { title: 'General Manager' } })).id,
   ];

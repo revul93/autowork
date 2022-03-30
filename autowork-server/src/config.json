@@ -9,7 +9,7 @@
   },
   "ADMIN_IS_LOGGED_IN": {
     "alg": "aes-256-ctr",
-    "value": "bb1a060338"
+    "value": "a9091f15"
   },
   "ADMIN_USERNAME": {
     "alg": "aes-256-ctr",
