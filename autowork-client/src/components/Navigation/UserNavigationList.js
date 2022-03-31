@@ -81,7 +81,18 @@ const UserNavigationList = (props) => {
       icon: <SchemaIcon />,
     },
   ]);
-  const [secondary_admin_list] = useState();
+    const [secondary_admin_list] = useState([
+    {
+      title: 'Reset Password',
+      url: '/admin/reset_password',
+      icon: <KeyIcon />,
+    },
+    {
+      title: 'Logout',
+      url: '/logout',
+      icon: <LogoutIcon />,
+    },
+  ]);
 
   useEffect(() => {
     const getTaskCount = async () => {
@@ -127,11 +138,11 @@ const UserNavigationList = (props) => {
       getApprovalCount();
       setLoading(false);
     };
-
+    
     if (employee_name !== 'SYSTEM ADMIN') {
-      getData();
+       getData();
     } else {
-      setLoading(false);
+       setLoading(false);
     }
 
     let intervalId;

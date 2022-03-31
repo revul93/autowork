@@ -32,6 +32,7 @@ const App = () => (
           <Route path='division/get_all' element={<ManageDivisions />} />
           <Route path='group/get_all' element={<>Manage Groups</>} />
           <Route path='workflow/get_all' element={<>Manage Workflows</>} />
+	  <Route path='reset_password' element={<PasswordReset />} />
         </Route>
         <Route path='/user' element={<UserDashboard />}>
           <Route path='document/get_all' element={<MyDocuments />} />
@@ -41,7 +42,6 @@ const App = () => (
           <Route path='approval/get_all' element={<MyApprovals />} />
           <Route path='reset_password' element={<PasswordReset />} />
         </Route>
-        <Route path='/help' element={<>Help</>} />
         <Route path='/logout' element={<>Logout</>} />
         <Route path='*' element={<>Not found</>} />
       </Routes>

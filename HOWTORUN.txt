@@ -1,0 +1,17 @@
+Requirements:
+NodeJS v16.7.0 or higher
+npm v7.20.3
+
+cd autowork-server/src
+cp .env.development .env
+
+Change your .env file as needed
+
+To load predefined structure and workflows
+Uncomment the following lines in \autowork\autowork-server\src\db\index.js
+// await db.sync({force: true, alter: true})
+// await db.sync()
+
+RUN:
+npm run prod
+
