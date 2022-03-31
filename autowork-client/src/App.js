@@ -13,6 +13,7 @@ import AdminDashboard from './pages/Admin/Dashboard';
 import ManageUsers from './pages/Admin/ManageUsers';
 import ManageDivisions from './pages/Admin/ManageDivisions';
 import ManageRoles from './pages/Admin/ManageRoles';
+import Document from './pages/User/Document';
 
 import { store } from './redux';
 
@@ -34,7 +35,7 @@ const App = () => (
         <Route path='/user' element={<UserDashboard />}>
           <Route path='document/get_all' element={<MyDocuments />} />
           <Route path='document/create' element={<CreateDocument />} />
-          <Route path='document/get_one/:document_id' element={<>Document</>} />
+          <Route path='document/get_one/:document_id' element={<Document />} />
           <Route path='task/get_all' element={<MyTasks />} />
           <Route path='approval/get_all' element={<MyApprovals />} />
           <Route path='reset_password' element={<>Reset Password*</>} />

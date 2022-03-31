@@ -1,4 +1,4 @@
-const AddToBlackListWorkflow = async () => {
+const ApplyDiscount = async () => {
   const {
     Workflow,
     Group,
@@ -100,4 +100,4 @@ const AddToBlackListWorkflow = async () => {
   ]);
 };
 
-module.exports = AddToBlackListWorkflow;
+module.exports = ApplyDiscount;

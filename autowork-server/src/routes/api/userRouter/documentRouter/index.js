@@ -303,7 +303,11 @@ router.get(
             approvals: await Promise.all(
               JSON.parse(document.approvals).map(async (approval) => ({
                 from: (await Role.findByPk(approval.role_id)).title,
-                author: approval.author,
+                author:
+                  approval.author &&
+                  (
+                    await Employee.findByPk(approval.author)
+                  ).name,
                 status: approval.status,
                 note: approval.note,
                 date: approval.date,

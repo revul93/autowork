@@ -18,7 +18,7 @@ import Checkbox from '@mui/material/Checkbox';
 import TextField from '@mui/material/TextField';
 
 const MyTasks = (props) => {
-  const { is_logged_in, token, renameTitle, employee_id } = props;
+  const { is_logged_in, token, renameTitle } = props;
   const navigate = useNavigate();
 
   const [doneLoading, setDoneLoading] = useState(false);
@@ -32,6 +32,15 @@ const MyTasks = (props) => {
   const [documentValueErrors, setDocumentValueErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [submittingError, setSubmittingError] = useState({});
+  const [DATAFIELDTYPES] = useState({
+    TEXTAREA: 'textarea',
+    TEXT: 'text',
+    NUMBER: 'number',
+    DATE: 'date',
+    CHECKBOX: 'checkbox',
+    RADIO: 'radio',
+    DROPDOWN: 'dropdown',
+  });
 
   useEffect(() => {
     renameTitle('My Tasks');
@@ -156,16 +165,6 @@ const MyTasks = (props) => {
     } finally {
       setSubmitting(false);
     }
-  };
-
-  const DATAFIELDTYPES = {
-    TEXTAREA: 'textarea',
-    TEXT: 'text',
-    NUMBER: 'number',
-    DATE: 'date',
-    CHECKBOX: 'checkbox',
-    RADIO: 'radio',
-    DROPDOWN: 'dropdown',
   };
 
   return (

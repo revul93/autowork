@@ -88,7 +88,7 @@ const InitializeAccountingDivision = async () => {
     },
     {
       username: 'haemah.zahra',
-      password: 'oG_H2I26LV4',
+      password: 'autowork',
       employee_id: HaemahZahra.id,
     },
   ]);
