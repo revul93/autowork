@@ -11,7 +11,9 @@ const GetDb = async () => {
     await db.sync({ force: true, alter: true });
     await SeedDb();
   } else if (process.env.NODE_ENV === 'production') {
-    await db.sync();
+    // await db.sync({ force: true, alter: true });
+    // await SeedDb();
+    db.sync();
   }
 
   return db;

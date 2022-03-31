@@ -128,7 +128,11 @@ const UserNavigationList = (props) => {
       setLoading(false);
     };
 
-    getData();
+    if (employee_name !== 'SYSTEM ADMIN') {
+      getData();
+    } else {
+      setLoading(false);
+    }
 
     let intervalId;
 
