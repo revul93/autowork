@@ -115,6 +115,7 @@ const VerificationForm = (props) => {
       />
       <Button
         fullWidth
+        type='button'
         variant='text'
         sx={{ mt: 3, mb: 2 }}
         disabled={!canResend}
@@ -128,6 +129,7 @@ const VerificationForm = (props) => {
       <Button
         type='submit'
         fullWidth
+        accessKey=''
         variant='contained'
         sx={{ mt: 3, mb: 2 }}
         disabled={state.is_loading}>

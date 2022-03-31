@@ -24,7 +24,7 @@ const PasswordChangeForm = (props) => {
           ...state,
           password_change_required: false,
         }));
-      }, 1500);
+      }, 1000);
     }
   }, [done, setMessage, setState]);
 

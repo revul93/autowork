@@ -123,11 +123,15 @@ const MyApprovals = (props) => {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'STARTED' || 'PENDING' || 'PROCESSING':
+      case 'STARTED':
+      case 'PENDING':
+      case 'PROCESSING':
         return 'theme.primary';
-      case 'REJECTED' || 'TERMINATED':
+      case 'REJECTED':
+      case 'TERMINATED':
         return 'red';
       case 'APPROVED':
+      case 'COMPLETED':
         return 'green';
       default:
         return 'theme.primary';
@@ -139,7 +143,7 @@ const MyApprovals = (props) => {
       {doneLoading && (
         <Grid container spacing={2} margin='normal' direction='column'>
           <Grid item>
-            <Typography variant='h5' margin={'normal'}>
+            <Typography variant='h5' marginTop={3} marginBottom={3}>
               Documents awaiting my approval
             </Typography>
             {(awaitingDocumentsLoadingError && (
@@ -258,7 +262,7 @@ const MyApprovals = (props) => {
             )}
           </Grid>
           <Grid item>
-            <Typography variant='h5' margin={'normal'}>
+            <Typography variant='h5' marginTop={3} marginBottom={3}>
               My Approvals
             </Typography>
             {(allDocumentsLoadingerror && (
@@ -316,12 +320,12 @@ const MyApprovals = (props) => {
                                 </Typography>
                                 <Typography variant='body2'>
                                   ON:{' '}
-                                  {
+                                  {new Date(
                                     JSON.parse(document.approvals).find(
                                       (approval) =>
                                         approval.author === employee_id,
-                                    ).date
-                                  }
+                                    ).date,
+                                  ).toLocaleString()}
                                 </Typography>
                               </Grid>
                             </Grid>

@@ -4,10 +4,12 @@
   "description": "Workflow automation system",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "install-client": "npm --prefix ./autowork-client install",
+    "install-server": "npm --prefix ./autowork-server install",
+    "install-all": "npm install && npm run install-server && npm run install-client",
+    "build-client": "npm --prefix ./autowork-client run build",
+    "prod": "npm run install-all && npm run build-client && npm run server",
     "server": "npm --prefix ./autowork-server run start",
-    "client": "npm --prefix ./autowork-client run start",
-    "prod": "concurrently \"npm run server\" \"npm run client\"",
     "dev-server": "npm --prefix ./autowork-server run dev",
     "dev-client": "npm --prefix ./autowork-client run start",
     "dev": "concurrently \"npm run dev-server\" \"npm run dev-client\""

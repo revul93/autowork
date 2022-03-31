@@ -55,11 +55,15 @@ const Document = (props) => {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'STARTED' || 'PENDING' || 'PROCESSING':
+      case 'STARTED':
+      case 'PENDING':
+      case 'PROCESSING':
         return 'theme.primary';
-      case 'REJECTED' || 'TERMINATED':
+      case 'REJECTED':
+      case 'TERMINATED':
         return 'red';
-      case 'APPROVED' || 'COMPLETED':
+      case 'APPROVED':
+      case 'COMPLETED':
         return 'green';
       default:
         return 'theme.primary';
@@ -128,73 +132,83 @@ const Document = (props) => {
               <Grid item sx={{ ml: 3, mb: 2 }}>
                 <Grid item>
                   <Typography variant='h6'>Approvals</Typography>
-                  {data.approvals.map((approval) => (
-                    <Grid item ml={2} mb={2} key={approval.from}>
-                      <Typography varian='body1'>
-                        {`Approval From: ${approval.from}`}
-                      </Typography>
-                      {approval.author && (
-                        <Typography varian='body1'>
-                          {`By: ${approval.author}`}
-                        </Typography>
-                      )}
-                      <Typography
-                        varian='body1'
-                        color={getStatusColor(approval.status)}>
-                        {`Status: ${approval.status} ${
-                          (approval.status !== 'PENDING' &&
-                            ` on: ${approval.date}`) ||
-                          ''
-                        }`}
-                      </Typography>
-                      {approval.note && (
-                        <Typography varian='body1'>
-                          {`Note: ${approval.note}`}
-                        </Typography>
-                      )}
-                    </Grid>
-                  ))}
+                  {data.approvals
+                    .map((approval) => {
+                      return (
+                        (data.status !== 'REJECTED' ||
+                          (data.status === 'REJECTED' &&
+                            approval.status !== 'PENDING')) && (
+                          <Grid item ml={2} mb={2} key={approval.from}>
+                            <Typography varian='body1'>
+                              {`Approval From: ${approval.from}`}
+                            </Typography>
+                            {approval.author && (
+                              <Typography varian='body1'>
+                                {`By: ${approval.author}`}
+                              </Typography>
+                            )}
+                            <Typography
+                              varian='body1'
+                              color={getStatusColor(approval.status)}>
+                              {`Status: ${approval.status} ${
+                                (approval.status !== 'PENDING' &&
+                                  ` on: ${approval.date}`) ||
+                                ''
+                              }`}
+                            </Typography>
+                            {approval.note && (
+                              <Typography varian='body1'>
+                                {`Note: ${approval.note}`}
+                              </Typography>
+                            )}
+                          </Grid>
+                        )
+                      );
+                    })
+                    .filter((approval) => approval)}
                 </Grid>
               </Grid>
-
-              <Grid item sx={{ ml: 3, mb: 2 }}>
-                <Grid item>
-                  <Typography variant='h6'>Transactions</Typography>
-                  {data.transactions.slice(1).map((transaction) => (
-                    <Grid item ml={2} mb={2} key={transaction.order}>
-                      <Typography varian='h6'>
-                        {`Transaction ${transaction.order}`}
-                      </Typography>
-                      <Typography varian='body1'>
-                        {`Assigned to: ${transaction.assigned_to}`}
-                      </Typography>
-                      {transaction.author_name && (
-                        <Typography varian='body1'>
-                          {`By: ${transaction.author_name} | ${transaction.author_staff_id}`}
+              {document.status !== 'REJECTED' && (
+                <Grid item sx={{ ml: 3, mb: 2 }}>
+                  <Grid item>
+                    <Typography variant='h6'>Transactions</Typography>
+                    {data.transactions.slice(1).map((transaction) => (
+                      <Grid item ml={2} mb={2} key={transaction.order}>
+                        <Typography varian='h6' fontWeight={'bold'}>
+                          {`Transaction ${transaction.order}`}
                         </Typography>
-                      )}
-                      <Typography
-                        varian='body1'
-                        color={getStatusColor(transaction.status)}>
-                        {`Status: ${transaction.status}`}
-                      </Typography>
-                      {transaction.data.map((datafield) => (
-                        <Grid item ml={2} key={datafield.label}>
+                        <Typography varian='body1'>
+                          {`Assigned to: ${transaction.assigned_to}`}
+                        </Typography>
+                        {transaction.author_name && (
                           <Typography varian='body1'>
-                            {`${datafield.label}: ${
-                              datafield.label.includes('Is')
-                                ? datafield.value === '1'
-                                  ? 'Yes'
-                                  : 'No'
-                                : datafield.value
-                            }`}
+                            {`By: ${transaction.author_name} | ${transaction.author_staff_id}`}
                           </Typography>
-                        </Grid>
-                      ))}
-                    </Grid>
-                  ))}
+                        )}
+                        <Typography
+                          varian='body1'
+                          color={getStatusColor(transaction.status)}>
+                          {`Status: ${transaction.status}`}
+                        </Typography>
+                        {transaction.status !== 'PENDING' &&
+                          transaction.data.map((datafield) => (
+                            <Grid item ml={2} key={datafield.label}>
+                              <Typography varian='body1'>
+                                {`${datafield.label}: ${
+                                  datafield.label.includes('Is')
+                                    ? datafield.value === '1'
+                                      ? 'Yes'
+                                      : 'No'
+                                    : datafield.value
+                                }`}
+                              </Typography>
+                            </Grid>
+                          ))}
+                      </Grid>
+                    ))}
+                  </Grid>
                 </Grid>
-              </Grid>
+              )}
             </Grid>
           )}
         </>

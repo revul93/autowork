@@ -102,11 +102,15 @@ const MyTasks = (props) => {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'STARTED' || 'PENDING' || 'PROCESSING':
+      case 'STARTED':
+      case 'PENDING':
+      case 'PROCESSING':
         return 'theme.primary';
-      case 'REJECTED' || 'TERMINATED':
+      case 'REJECTED':
+      case 'TERMINATED':
         return 'red';
       case 'APPROVED':
+      case 'COMPLETED':
         return 'green';
       default:
         return 'theme.primary';
@@ -172,7 +176,7 @@ const MyTasks = (props) => {
       {doneLoading && (
         <Grid container spacing={2} margin='normal' direction='column'>
           <Grid item>
-            <Typography variant='h5' margin={'normal'}>
+            <Typography variant='h5' marginTop={3} marginBottom={3}>
               Documents awaiting my action
             </Typography>
             {(awaitingDocumentsLoadingError && (
@@ -445,7 +449,7 @@ const MyTasks = (props) => {
             )}
           </Grid>
           <Grid item>
-            <Typography variant='h5' margin={'normal'}>
+            <Typography variant='h5' marginTop={3} marginBottom={3}>
               My Previous actions
             </Typography>
             {(allDocumentsLoadingerror && (
@@ -494,7 +498,10 @@ const MyTasks = (props) => {
                                   {document.document_transaction.status}
                                 </Typography>
                                 <Typography variant='body2'>
-                                  ON: {document.document_transaction.created_at}
+                                  ON:{' '}
+                                  {new Date(
+                                    document.document_transaction.created_at,
+                                  ).toLocaleString()}
                                 </Typography>
                               </Grid>
                             </Grid>

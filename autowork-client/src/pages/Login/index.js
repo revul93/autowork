@@ -19,8 +19,8 @@ const Login = (props) => {
   const { is_logged_in, login } = props;
   const navigate = useNavigate();
   const [state, setState] = useState({
-    username: 'nuraddin.alfarsi',
-    password: 'autowork',
+    username: '',
+    password: '',
     user_id: '',
     auth_code: '',
     token: null,

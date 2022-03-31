@@ -21,8 +21,8 @@ const AdminLogin = (props) => {
   const { is_logged_in, login } = props;
   const navigate = useNavigate();
   const [state, setState] = useState({
-    username: 'administrator',
-    password: 'autowork@Admin',
+    username: '',
+    password: '',
     user_id: '',
     token: null,
     is_loading: false,

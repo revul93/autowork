@@ -14,6 +14,7 @@ import ManageUsers from './pages/Admin/ManageUsers';
 import ManageDivisions from './pages/Admin/ManageDivisions';
 import ManageRoles from './pages/Admin/ManageRoles';
 import Document from './pages/User/Document';
+import PasswordReset from './pages/Login/PasswordReset';
 
 import { store } from './redux';
 
@@ -38,7 +39,7 @@ const App = () => (
           <Route path='document/get_one/:document_id' element={<Document />} />
           <Route path='task/get_all' element={<MyTasks />} />
           <Route path='approval/get_all' element={<MyApprovals />} />
-          <Route path='reset_password' element={<>Reset Password*</>} />
+          <Route path='reset_password' element={<PasswordReset />} />
         </Route>
         <Route path='/help' element={<>Help</>} />
         <Route path='/logout' element={<>Logout</>} />

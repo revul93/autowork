@@ -49,11 +49,15 @@ const MyDocuments = (props) => {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'STARTED' || 'PENDING' || 'PROCESSING':
+      case 'STARTED':
+      case 'PENDING':
+      case 'PROCESSING':
         return 'theme.primary';
-      case 'REJECTED' || 'TERMINATED':
+      case 'REJECTED':
+      case 'TERMINATED':
         return 'red';
       case 'APPROVED':
+      case 'COMPLETED':
         return 'green';
       default:
         return 'theme.primary';
